@@ -1,2 +1,9 @@
 # Signal-analysis-and-processing
- Signal recording. Signal processing using Fourier series. Signal change.
+
+Required libraries
+| Library name |            How to download             |
+| ------------ | -------------------------------------- |
+| pyaudio      | `python3.10 -m pip install pyaudio`    |
+| numpy        | `python3.10 -m pip install numpy`      |
+| matplotlib   | `python3.10 -m pip install matplotlib` |
+| wave         | installed by default                   |
