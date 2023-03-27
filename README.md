@@ -7,3 +7,5 @@ Required libraries
 | numpy        | `python3.10 -m pip install numpy`      |
 | matplotlib   | `python3.10 -m pip install matplotlib` |
 | wave         | installed by default                   |
+| cmath        | installed by default                   |
+| time         | installed by default                   |
