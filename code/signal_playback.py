@@ -12,20 +12,36 @@ def signal_playback():
         RATE = wf.getframerate() # Sampling rate
         N_FRAMES = wf.getnframes() # The number of frames
 
-        # Selecting a playback device
-        print("List of available devices:")
-        for i in range(audio.get_device_count()):
-            print(f"\t{i} {audio.get_device_info_by_index(i)['name']}")
+        while True: # The loop runs until the correct data is entered
+            try:
+                # Selecting a playback device
+                print(f"List of available devices:")
+                for i in range(audio.get_device_count()):
+                    print(f"\t{i} {audio.get_device_info_by_index(i)['name']}")
 
-        output_device = int(input('Select the index of the playback device: '))
+                while True:
+                    output_device = int(input('Select the index of the playback device: '))
+                    if (output_device >= 0) and (output_device <= i):
+                        break
+                    else:
+                        print(f"Invalid input. Non-existent index.")
+                        print(f"List of available devices:")
+                        for i in range(audio.get_device_count()):
+                            print(f"\t{i} {audio.get_device_info_by_index(i)['name']}")
 
-        # Opening the stream for recording to the output device - speaker - with the same parameters with which the signal was created
-        stream = audio.open(format=SAMPLE_FORMAT,
-                            channels=CHANNELS,
-                            rate=RATE,
-                            output_device_index=output_device,
-                            output=True)
-
+                # Opening the stream for recording to the output device - speaker - with the same parameters with which the signal was created
+                stream = audio.open(format=SAMPLE_FORMAT,
+                                    channels=CHANNELS,
+                                    rate=RATE,
+                                    output_device_index=output_device,
+                                    output=True)
+                break
+            
+            except ValueError:
+                print(f"Invalid input. You didn't enter a number.")
+            except OSError:
+                print(f"Invalid playback device.")
+        
         print(f"Start of signal playback...")
         stream.write(wf.readframes(N_FRAMES)) # Sending a signal to the speaker
         print(f"End of signal playback!\n")

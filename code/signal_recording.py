@@ -11,20 +11,36 @@ FILENAME = "../data/input_signal.wav" # Output file name
 def signal_recording():
     audio = pyaudio.PyAudio()  # Initialize PyAudio object
 
-    # Selecting a recording device
-    print("List of available devices:")
-    for i in range(audio.get_device_count()):
-        print(f"\t{i} {audio.get_device_info_by_index(i)['name']}")
+    while True: # The loop runs until the correct data is entered
+        try:
+            # Selecting a recording device
+            print(f"List of available devices:")
+            for i in range(audio.get_device_count()):
+                print(f"\t{i} {audio.get_device_info_by_index(i)['name']}")
 
-    input_device = int(input('Select the index of the recording device: '))
+            while True:
+                input_device = int(input('Select the index of the recording device: '))
+                if (input_device >= 0) and (input_device <= i):
+                    break
+                else:
+                    print(f"Invalid input. Non-existent index.")
+                    print(f"List of available devices:")
+                    for i in range(audio.get_device_count()):
+                        print(f"\t{i} {audio.get_device_info_by_index(i)['name']}")
 
-    # Open the stream to read data from the default recording device and set the parameters
-    stream = audio.open(format=SAMPLE_FORMAT,
-                        channels=CHANNELS,
-                        rate=RATE,
-                        frames_per_buffer=CHUNK,
-                        input_device_index=input_device,
-                        input=True)
+            # Open the stream to read data from the recording device and set the parameters
+            stream = audio.open(format=SAMPLE_FORMAT,
+                                channels=CHANNELS,
+                                rate=RATE,
+                                frames_per_buffer=CHUNK,
+                                input_device_index=input_device,
+                                input=True)
+            break
+
+        except ValueError:
+            print(f"Invalid input. You didn't enter a number.")
+        except OSError:
+            print(f"Invalid recording device.")
     
     frames = [] # Declaring an array for storing frames
 
