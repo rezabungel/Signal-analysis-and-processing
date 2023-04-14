@@ -2,13 +2,35 @@ import pyaudio
 import wave
 
 SAMPLE_FORMAT = pyaudio.paInt16  # Sound depth = 16 bits = 2 bytes
-CHANNELS = 1 # Mono
-RATE = 44100 # Sampling rate - number of frames per second
-CHUNK = 1024 # The number of frames per one "request" to the microphone (read in pieces)
-SECONDS = 5 # Recording duration
-FILENAME = "../data/input_signal.wav" # Output file name
 
-def signal_recording():
+def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must contain the path and file name of the record. FILENAME must end in ".wav"
+                     SECONDS = 5, # Recording duration
+                     RATE = 44100, # Sampling rate - number of frames per second
+                     CHUNK = 1024, # The number of frames per one "request" to the microphone (read in pieces)
+                     CHANNELS = 1, # Mono
+                    ):
+
+    # Checking for the correctness of the input data
+    if type(FILENAME) != str or '.wav' not in FILENAME:
+        FILENAME = "../data/input_signal.wav"
+        print(f'The filename for recording is set incorrectly. The default value is set:\n\t FILENAME = "{FILENAME}"')
+
+    if type(SECONDS) != int or SECONDS <= 0:
+        SECONDS = 5
+        print(f'The recording duration is set incorrectly. The default value is set:\n\t SECONDS = {SECONDS}')
+    
+    if type(RATE) != int or RATE <= 0:
+        RATE = 44100
+        print(f'The sampling rate is set incorrectly. The default value is set:\n\t RATE = {RATE}')
+
+    if type(CHUNK) != int or CHUNK <= 0:
+        CHUNK = 1024
+        print(f'The number of frames per one "request" to the microphone is set incorrectly. The default value is set:\n\t CHUNK = {CHUNK}')
+
+    if type(CHANNELS) != int or CHANNELS <= 0:
+        CHANNELS = 1
+        print(f'The number of channels is set incorrectly. The default value is set:\n\t CHANNELS = {CHANNELS}')
+
     audio = pyaudio.PyAudio()  # Initialize PyAudio object
 
     while True: # The loop runs until the correct data is entered

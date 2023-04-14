@@ -1,9 +1,13 @@
 import pyaudio
 import wave
 
-FILENAME = "../data/output_signal.wav"
+def signal_playback(FILENAME = "../data/output_signal.wav"): # FILENAME must contain the path and file name of the playback. FILENAME must end in ".wav"
 
-def signal_playback():
+    # Checking for the correctness of the input data
+    if type(FILENAME) != str or '.wav' not in FILENAME:
+        FILENAME = "../data/output_signal.wav"
+        print(f'The filename for playback is set incorrectly. The default value is set:\n\t FILENAME = "{FILENAME}"')
+    
     with wave.open(FILENAME, 'rb') as wf:
         audio = pyaudio.PyAudio()  # Initialize PyAudio object
 
