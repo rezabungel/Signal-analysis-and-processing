@@ -54,8 +54,8 @@ def fourier_transform(path_to_signal = "../data/input_signal.wav"):
         print(f"DFT progress: {100}% \t Iteration: {index_Nyquist_frequency}\{index_Nyquist_frequency}")
         print(f"The end of the calculation of the discrete Fourier transform. Time spent {'%.3f' % end_time} seconds.\n")
         
-        FT = abs(FT) # Unnormalized signal amplitude
-        FT = 2*FT/N_FRAMES # Normalized signal amplitude
+        amplitude = abs(FT) # Unnormalized signal amplitude
+        amplitude = 2*amplitude/N_FRAMES # Normalized signal amplitude
 
         frequency = np.zeros(shape=index_Nyquist_frequency) # Declaring an array of frequencies of the signal spectrum
         for i in range(index_Nyquist_frequency):
@@ -99,7 +99,7 @@ def fourier_transform(path_to_signal = "../data/input_signal.wav"):
         name_fourier_transform_graph = ''.join(name_fourier_transform_graph)
 
         # Plotting the Fourier transform graph
-        plt.stem(frequency, FT)
+        plt.stem(frequency, amplitude)
         plt.title(name_fourier_transform_graph)
         plt.xlabel('Frequency')
         plt.ylabel('Amplitude')
@@ -107,6 +107,7 @@ def fourier_transform(path_to_signal = "../data/input_signal.wav"):
         plt.savefig(path_to_save_fourier_transform_graph)
         plt.show()
 
+        return (FT, amplitude, frequency)
 
 if __name__ == "__main__":
     fourier_transform()
