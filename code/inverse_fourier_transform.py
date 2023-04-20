@@ -30,6 +30,7 @@ def inverse_fourier_transform(FT, mirror_image=False):
     print(f"iDFT progress: {progress}% \t Iteration: {0}\{N_FRAMES}")
     start_time = time.time() # Starting the stopwatch
 
+    # inverse Discrete Fourier transform (iDFT)
     for i in range(N_FRAMES):
         if i == to_track_progress and progress < 90:
                 progress +=10

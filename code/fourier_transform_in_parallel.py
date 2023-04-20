@@ -54,7 +54,7 @@ def fourier_transform_in_parallel(path_to_signal = "../data/input_signal.wav"):
 
         # Creating calculation intervals for each core
         step = int(index_Nyquist_frequency/8)
-        interval = np.zeros(9, dtype=np.int16)
+        interval = np.zeros(9, dtype=np.uint32)
         interval[0] = 0
         for i in range(1, 8):
             interval[i] = interval[i-1] + step
