@@ -1,3 +1,8 @@
+'''
+This module is used to record the signal.
+The signal is recorded from your microphone and saved to a file with the extension ".wav".
+'''
+
 import pyaudio
 import wave
 
@@ -9,6 +14,17 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
                      CHUNK = 1024, # The number of frames per one "request" to the microphone (read in pieces)
                      CHANNELS = 1, # Mono
                     ):
+
+    '''
+    This function allows you to record a signal using a microphone.
+    The following parameters are passed to the function:
+        FILENAME ("str") - path to save the file and its name with ".wav" extension. (example: "../the_path_to_save_the_file/name_of_the_saved_file.wav");
+        SECONDS ("int" and greater than 0) - recording duration in seconds;
+        RATE ("int" and greater than 0) - sampling rate in hertz. (note: 44100 is enough for a voice);
+        CHUNK ("int" and greater than 0) - number of frames per one "request" to the microphone. (note: 1024 is enough for a voice);
+        CHANNELS ("int" and greater than 0) - number of audio tracks. (note: use 1 (mono sound)).
+    The result of the function will be a recorded signal, saved in accordance with the passed parameters.
+    '''
 
     # Checking for the correctness of the input data
     if type(FILENAME) != str or '.wav' not in FILENAME:

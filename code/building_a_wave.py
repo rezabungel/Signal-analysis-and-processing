@@ -1,3 +1,8 @@
+'''
+This module is used to display the waveform on the graph.
+Signal from a file with the extension ".wav" will be displayed on the graph. This graph will be shown on the screen and saved to a file with the extension ".png".
+'''
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -10,6 +15,15 @@ types = {
 }
 
 def building_a_wave(path_to_signal = "../data/input_signal.wav"):
+
+    '''
+    This function allows you to plot the signal.
+    The following parameters are passed to the function:
+        path_to_signal ("str") - the path where the file is stored and its name with the extension ".wav". (example: "../the_path_where_the_file_is_stored/file_name.wav").
+    The result of the function will be a plotted signal graph. This graph will be shown on the screen and saved with the extension ".png".
+        The save path will be taken from the path_to_signal parameter with the name of the saved file changed. (note: "graph_" will be added before the file name and the extension will be changed from ".wav" to ".png"). (example: "../the_path_where_the_file_is_stored/graph_file_name.png").
+    '''
+
     with wave.open(path_to_signal, 'rb') as wf:
 
         SAMPLE_FORMAT = wf.getsampwidth() # Sound depth

@@ -1,11 +1,24 @@
+'''
+This module is used to calculate the inverse discrete Fourier transform and obtain signal data.
+The inverse discrete Fourier transform is calculated from the data of the discrete Fourier transform. Signal data is the value of the signal in time.
+'''
+
 import numpy as np
 
 import cmath
 
 import time # Used to calculate the time spent on iDFT
 
-def mirror(FT_need_mirror): # FT_need_mirror is a class 'numpy.ndarray' with dtype=np.complex128
-    # The "mirror" function adds a mirror image of a complex conjugate array of the Fourier transform, which was obtained using the "fourier_transform_in_parallel" or "fourier_transform" function.
+def mirror(FT_need_mirror):
+
+    '''
+    The "mirror" function adds a mirror image of a complex conjugate array of the Fourier transform, which was obtained using the "fourier_transform_in_parallel" or "fourier_transform" function.
+    The following parameters are passed to the function:
+        FT_need_mirror ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform. (note: elements from the first to the penultimate will be mirrored and complex conjugate).
+    The result of the function:
+        Return values:
+            FT_need_mirror ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform with added mirror imaged complex conjugate values of the discrete Fourier transform.
+    '''
 
     mirror_image = FT_need_mirror.copy()
     mirror_image = mirror_image[1:-1]
@@ -17,6 +30,17 @@ def mirror(FT_need_mirror): # FT_need_mirror is a class 'numpy.ndarray' with dty
 
 def inverse_fourier_transform(FT, mirror_image=False):
     
+    '''
+    This function allows you to calculate the inverse discrete Fourier transform and the value of the signal data.
+    The following parameters are passed to the function:
+        FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform;
+        mirror_image ("bool") - If "True", the "mirror" function will be called, if "False", the "mirror" function will not be called.
+    The result of the function:
+        Return values:
+            iFT ("numpy.ndarray" with dtype="numpy.complex128") - values of the inverse discrete Fourier transform;
+            data_signal ("numpy.ndarray" with dtype="numpy.int32") - value of the signal data.
+    '''
+
     if mirror_image == True:
         FT = mirror(FT)
 

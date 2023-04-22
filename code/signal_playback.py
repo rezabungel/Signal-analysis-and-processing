@@ -1,7 +1,19 @@
+'''
+This module is used to playback the signal.
+Signal from a file with the extension ".wav" is played from your speakers.
+'''
+
 import pyaudio
 import wave
 
 def signal_playback(FILENAME = "../data/output_signal.wav"): # FILENAME must contain the path and file name of the playback. FILENAME must end in ".wav"
+
+    '''
+    This function allows you to playback the signal using the speakers.
+    The following parameters are passed to the function:
+        FILENAME ("str") - the path where the file is stored and its name with the extension ".wav". (example: "../the_path_where_the_file_is_stored/file_name.wav").
+    The result of the function will be a signal playback from the speakers.
+    '''
 
     # Checking for the correctness of the input data
     if type(FILENAME) != str or '.wav' not in FILENAME:

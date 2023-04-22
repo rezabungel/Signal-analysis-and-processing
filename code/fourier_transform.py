@@ -1,3 +1,8 @@
+'''
+This module is used to calculate the discrete Fourier transform, normalize the result of this transformation and plot the result on a graph.
+The discrete Fourier transform is calculated for a signal stored in a file with the extension ".wav". The discrete Fourier transform graph will be displayed on the screen and saved to a file with the extension ".png".
+''' 
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -13,6 +18,21 @@ types = {
 }
 
 def fourier_transform(path_to_signal = "../data/input_signal.wav"):
+
+    '''
+    This function allows you to calculate the discrete Fourier transform for a signal from a file with the extension ".wav", normalize the result of this transformation and plot the result on a graph.
+    The following parameters are passed to the function:
+        path_to_signal ("str") - the path where the file is stored and its name with the extension ".wav". (example: "../the_path_where_the_file_is_stored/file_name.wav").
+    The result of the function:
+        Return values:
+            FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform (from 0 to the Nyquist frequency);
+            amplitude ("numpy.ndarray" with dtype="numpy.float64") - signal amplitude;
+            frequency ("numpy.ndarray" with dtype="numpy.float64") - signal frequency in hertz.
+        Discrete Fourier transform graph:
+            The discrete Fourier transform graph will be shown on the screen;
+            The discrete Fourier transform graph will be saved in a file with the extension ".png". The save path will be taken from the path_to_signal parameter with the name of the saved file changed. (note: "fourier_transform_graph_" will be added before the file name and the extension will be changed from ".wav" to ".png"). (example: "../the_path_where_the_file_is_stored/fourier_transform_graph_file_name.png").
+    '''
+
     with wave.open(path_to_signal, 'rb') as wf:
 
         SAMPLE_FORMAT = wf.getsampwidth() # Sound depth
@@ -23,7 +43,7 @@ def fourier_transform(path_to_signal = "../data/input_signal.wav"):
         
         # One of the properties of the discrete Fourier transform: symmetry with respect to the Nyquist frequency (the rule applies to a real signal).
         # We will consider the Fourier transform from 0 to the Nyquist frequency, and not from 0 to the Sampling frequency. 
-        # To get the Fourier transform from 0 to the Sampling frequency, you need to mirror image the Fourier transform from 0 to the Nyquist frequency.
+        # To get the Fourier transform from 0 to the Sampling frequency, you need to mirror image the complex conjugate numbers from the Fourier transform starting from the first element to the penultimate element.
         Nyquist_frequency = int(RATE/2)
         index_Nyquist_frequency = int(N_FRAMES/2) + 1
 

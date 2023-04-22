@@ -1,3 +1,9 @@
+'''
+This module is used to calculate the inverse discrete Fourier transform and obtain signal data.
+The calculation of the inverse discrete Fourier transform is parallelized into 8 cores. If there are fewer or more cores, this will not cause problems.
+The inverse discrete Fourier transform is calculated from the data of the discrete Fourier transform. Signal data is the value of the signal in time.
+'''
+
 import numpy as np
 
 import multiprocessing
@@ -7,6 +13,19 @@ import cmath
 import time # Used to calculate the time spent on iDFT
 
 def iDFT(index_start, index_stop, N_FRAMES, FT):
+
+    '''
+    This function is used to calculate the inverse discrete Fourier transform when parallelizing calculations. (note: This function is used in conjunction with the "inverse_fourier_transform_in_parallel" function. The "iDFT" function is not used separately.)
+    The following parameters are passed to the function:
+        index_start (dtype="numpy.uint32") - index of the beginning of the calculation; 
+        index_stop (dtype="numpy.uint32") - index of the end of the calculation;
+        N_FRAMES ("int") - the number of frames;
+        FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform.
+    The result of the function:
+        Return values:
+            iFT ("numpy.ndarray" with dtype="numpy.complex128") - values of the inverse discrete Fourier transform (from index_start to the index_stop).
+    '''
+
     # inverse Discrete Fourier transform (iDFT)
     iFT = np.zeros(shape=N_FRAMES, dtype=np.complex128)
 
@@ -19,8 +38,16 @@ def iDFT(index_start, index_stop, N_FRAMES, FT):
     
     return iFT
 
-def mirror(FT_need_mirror): # FT_need_mirror is a class 'numpy.ndarray' with dtype=np.complex128
-    # The "mirror" function adds a mirror image of a complex conjugate array of the Fourier transform, which was obtained using the "fourier_transform_in_parallel" or "fourier_transform" function.
+def mirror(FT_need_mirror):
+    
+    '''
+    The "mirror" function adds a mirror image of a complex conjugate array of the Fourier transform, which was obtained using the "fourier_transform_in_parallel" or "fourier_transform" function.
+    The following parameters are passed to the function:
+        FT_need_mirror ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform. (note: elements from the first to the penultimate will be mirrored and complex conjugate).
+    The result of the function:
+        Return values:
+            FT_need_mirror ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform with added mirror imaged complex conjugate values of the discrete Fourier transform.
+    '''
 
     mirror_image = FT_need_mirror.copy()
     mirror_image = mirror_image[1:-1]
@@ -32,6 +59,17 @@ def mirror(FT_need_mirror): # FT_need_mirror is a class 'numpy.ndarray' with dty
 
 def inverse_fourier_transform_in_parallel(FT, mirror_image=False):
     
+    '''
+    This function allows you to calculate the inverse discrete Fourier transform (parallelizing calculations by 8 cores) and the value of the signal data.
+    The following parameters are passed to the function:
+        FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform;
+        mirror_image ("bool") - If "True", the "mirror" function will be called, if "False", the "mirror" function will not be called.
+    The result of the function:
+        Return values:
+            iFT ("numpy.ndarray" with dtype="numpy.complex128") - values of the inverse discrete Fourier transform;
+            data_signal ("numpy.ndarray" with dtype="numpy.int32") - value of the signal data.
+    '''
+
     if mirror_image == True:
         FT = mirror(FT)
 
