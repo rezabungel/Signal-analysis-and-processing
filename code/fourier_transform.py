@@ -1,15 +1,16 @@
 '''
-This module is used to calculate the discrete Fourier transform, normalize the result of this transformation and plot the result on a graph.
-The discrete Fourier transform is calculated for a signal stored in a file with the extension ".wav". The discrete Fourier transform graph will be displayed on the screen and saved to a file with the extension ".png".
+This module is used to calculate the discrete Fourier transform, normalize the result of this transformation and plot the result on a graph (the graph is plotted if necessary).
+The discrete Fourier transform is calculated for a signal stored in a file with the extension ".wav". If necessary, the discrete Fourier transform graph will be displayed on the screen and saved to a file with the extension ".png".
 ''' 
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 import wave
 import cmath
 
 import time # Used to calculate the time spent on DFT
+
+import building_a_fourier_transform_graph
 
 types = {
     1: np.int8,
@@ -17,20 +18,20 @@ types = {
     4: np.int32
 }
 
-def fourier_transform(path_to_signal = "../data/input_signal.wav"):
+def fourier_transform(path_to_signal = "../data/input_signal.wav", need_to_plot = False):
 
     '''
-    This function allows you to calculate the discrete Fourier transform for a signal from a file with the extension ".wav", normalize the result of this transformation and plot the result on a graph.
+    This function allows you to calculate the discrete Fourier transform for a signal from a file with the extension ".wav", normalize the result of this transformation and plot the result on a graph (the graph is plotted if necessary).
     The following parameters are passed to the function:
-        path_to_signal ("str") - the path where the file is stored and its name with the extension ".wav". (example: "../the_path_where_the_file_is_stored/file_name.wav").
+        path_to_signal ("str") - the path where the file is stored and its name with the extension ".wav". (example: "../the_path_where_the_file_is_stored/file_name.wav");
+        need_to_plot ("bool") - if "True", the "building_a_fourier_transform_graph" function will be called, if "False", the "building_a_fourier_transform_graph" function will not be called. The function "building_a_fourier_transform_graph" plots the graph of the discrete Fourier transform.
     The result of the function:
         Return values:
             FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform (from 0 to the Nyquist frequency);
             amplitude ("numpy.ndarray" with dtype="numpy.float64") - signal amplitude;
             frequency ("numpy.ndarray" with dtype="numpy.float64") - signal frequency in hertz.
-        Discrete Fourier transform graph:
-            The discrete Fourier transform graph will be shown on the screen;
-            The discrete Fourier transform graph will be saved in a file with the extension ".png". The save path will be taken from the path_to_signal parameter with the name of the saved file changed. (note: "fourier_transform_graph_" will be added before the file name and the extension will be changed from ".wav" to ".png"). (example: "../the_path_where_the_file_is_stored/fourier_transform_graph_file_name.png").
+        Discrete Fourier transform graph (if "need_to_plot" = True):
+            Please refer to the result of the "building_a_fourier_transform_graph" function implemented in the "building_a_fourier_transform_graph.py" file.
     '''
 
     with wave.open(path_to_signal, 'rb') as wf:
@@ -81,51 +82,8 @@ def fourier_transform(path_to_signal = "../data/input_signal.wav"):
         for i in range(index_Nyquist_frequency):
             frequency[i] = i*RATE / N_FRAMES
         
-        # Preparing a path to save the Fourier transform graph and the name of the Fourier transform graph
-        path_to_save_fourier_transform_graph = list()
-        name_fourier_transform_graph = list("fourier_transform_graph_")
-
-        if path_to_signal.count('/') > 0:
-            count = path_to_signal.count('/')
-            stop = 0
-            for i in path_to_signal:
-                if stop != count:
-                    if i != '/':
-                        path_to_save_fourier_transform_graph.append(i)
-                    else:
-                        path_to_save_fourier_transform_graph.append(i)
-                        stop += 1
-                else:
-                    if i != '.':
-                        name_fourier_transform_graph.append(i)
-                    else:
-                        name_fourier_transform_graph.append(i + "png")
-                        break
-            path_to_save_fourier_transform_graph = ''.join(path_to_save_fourier_transform_graph + name_fourier_transform_graph)
-        else:
-            for i in path_to_signal:
-                if i != '.':
-                    name_fourier_transform_graph.append(i)
-                else:
-                    name_fourier_transform_graph.append(i + "png")
-                    break
-            path_to_save_fourier_transform_graph = ''.join(path_to_save_fourier_transform_graph + name_fourier_transform_graph)
-
-        name_fourier_transform_graph.remove('.png')
-        name_fourier_transform_graph[0] = "F"
-        for i in range(len(name_fourier_transform_graph)):
-            if name_fourier_transform_graph[i] == "_":
-                name_fourier_transform_graph[i] = " "
-        name_fourier_transform_graph = ''.join(name_fourier_transform_graph)
-
-        # Plotting the Fourier transform graph
-        plt.stem(frequency, amplitude)
-        plt.title(name_fourier_transform_graph)
-        plt.xlabel('Frequency')
-        plt.ylabel('Amplitude')
-        plt.grid(alpha=0.1)
-        plt.savefig(path_to_save_fourier_transform_graph)
-        plt.show()
+        if need_to_plot == True:
+            building_a_fourier_transform_graph.building_a_fourier_transform_graph(frequency, amplitude, path_to_signal) # Plotting a discrete Fourier transform
 
         return (FT, amplitude, frequency)
 

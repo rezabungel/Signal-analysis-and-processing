@@ -14,6 +14,7 @@ SAMPLE_FORMAT = pyaudio.paInt16  # Sound depth = 16 bits = 2 bytes
 
 
 def convert_to_int16(data_signal):
+
     '''
     The "convert_to_int16" function converts "numpy.ndarray" with a type other than dtype="numpy.int16" to "numpy.ndarray" with dtype="numpy.int16".
     The following parameters are passed to the function:
