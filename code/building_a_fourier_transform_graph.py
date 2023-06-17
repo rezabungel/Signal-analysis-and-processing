@@ -20,44 +20,14 @@ def building_a_fourier_transform_graph(frequency, amplitude, path_to_signal="../
         The discrete Fourier transform graph will be saved in a file with the extension ".png". The save path will be taken from the path_to_signal parameter with the name of the saved file changed. (note: "fourier_transform_graph_" will be added before the file name and the extension will be changed from ".wav" to ".png"). (example: "../the_path_where_the_file_is_stored/fourier_transform_graph_file_name.png").
     '''
 
-    # Preparing a path to save the discrete Fourier transform graph and the name of the discrete Fourier transform graph
-    path_to_save_fourier_transform_graph = list()
-    name_fourier_transform_graph = list("fourier_transform_graph_")
-
-    if path_to_signal.count('/') > 0:
-        count = path_to_signal.count('/')
-        stop = 0
-        for i in path_to_signal:
-            if stop != count:
-                if i != '/':
-                    path_to_save_fourier_transform_graph.append(i)
-                else:
-                    path_to_save_fourier_transform_graph.append(i)
-                    stop += 1
-            else:
-                if i != '.':
-                    name_fourier_transform_graph.append(i)
-                else:
-                    name_fourier_transform_graph.append(i + "png")
-                    break
-        path_to_save_fourier_transform_graph = ''.join(
-            path_to_save_fourier_transform_graph + name_fourier_transform_graph)
-    else:
-        for i in path_to_signal:
-            if i != '.':
-                name_fourier_transform_graph.append(i)
-            else:
-                name_fourier_transform_graph.append(i + "png")
-                break
-        path_to_save_fourier_transform_graph = ''.join(
-            path_to_save_fourier_transform_graph + name_fourier_transform_graph)
-
-    name_fourier_transform_graph.remove('.png')
-    name_fourier_transform_graph[0] = "F"
-    for i in range(len(name_fourier_transform_graph)):
-        if name_fourier_transform_graph[i] == "_":
-            name_fourier_transform_graph[i] = " "
-    name_fourier_transform_graph = ''.join(name_fourier_transform_graph)
+    # Preparing the name of the discrete Fourier transform graph and the path to save the discrete Fourier transform graph.
+    name_fourier_transform_graph = "fourier_transform_graph_" + path_to_signal.split(r'/')[-1].split(r'.')[0] # "fourier_transform_graph_" + file name without extension
+    path_to_save_fourier_transform_graph = "./" + "/".join(path_to_signal.split(r'/')[0: -1]) + "/" + name_fourier_transform_graph + ".png" # "./" + path to save the graph + "/" + name_fourier_transform_graph + extension
+    
+    # Preparing the name of the graph for the graph title.
+    name_fourier_transform_graph = name_fourier_transform_graph.split('_')
+    name_fourier_transform_graph[0] = name_fourier_transform_graph[0].capitalize()
+    name_fourier_transform_graph = " ".join(name_fourier_transform_graph)
 
     # Plotting the discrete Fourier transform graph
     plt.stem(frequency, amplitude)
