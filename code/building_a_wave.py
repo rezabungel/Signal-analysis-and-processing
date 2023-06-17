@@ -24,6 +24,13 @@ def building_a_wave(path_to_signal = "../data/input_signal.wav"):
         The save path will be taken from the path_to_signal parameter with the name of the saved file changed. (note: "graph_" will be added before the file name and the extension will be changed from ".wav" to ".png"). (example: "../the_path_where_the_file_is_stored/graph_file_name.png").
     '''
 
+    # Checking for the correctness of the input data
+    if type(path_to_signal) != str or '.wav' not in path_to_signal:
+        path_to_signal = "../data/input_signal.wav"
+        print(f'The path to the signal for building_a_wave is specified incorrectly. The default value is set:\n\t path_to_signal = "{path_to_signal}"')
+    else:
+        path_to_signal = "./" + path_to_signal
+
     with wave.open(path_to_signal, 'rb') as wf:
 
         SAMPLE_FORMAT = wf.getsampwidth() # Sound depth
@@ -41,42 +48,14 @@ def building_a_wave(path_to_signal = "../data/input_signal.wav"):
         data_signal = np.frombuffer(wf.readframes(N_FRAMES), dtype=types[SAMPLE_FORMAT]) # Reading the signal from the file and converting bytes to int
         time = np.linspace(0.0, N_FRAMES/RATE, num=N_FRAMES) # Time for the X axis
 
-        # Preparing a path to save the signal graph and the name of the signal graph
-        path_to_save_signal_graph = list()
-        name_signal_graph = list("graph_")
-
-        if path_to_signal.count('/') > 0:
-            count = path_to_signal.count('/')
-            stop = 0
-            for i in path_to_signal:
-                if stop != count:
-                    if i != '/':
-                        path_to_save_signal_graph.append(i)
-                    else:
-                        path_to_save_signal_graph.append(i)
-                        stop += 1
-                else:
-                    if i != '.':
-                        name_signal_graph.append(i)
-                    else:
-                        name_signal_graph.append(i + "png")
-                        break
-            path_to_save_signal_graph = ''.join(path_to_save_signal_graph + name_signal_graph)
-        else:
-            for i in path_to_signal:
-                if i != '.':
-                    name_signal_graph.append(i)
-                else:
-                    name_signal_graph.append(i + "png")
-                    break
-            path_to_save_signal_graph = ''.join(path_to_save_signal_graph + name_signal_graph)
-
-        name_signal_graph.remove('.png')
-        name_signal_graph[0] = "G"
-        for i in range(len(name_signal_graph)):
-            if name_signal_graph[i] == "_":
-                name_signal_graph[i] = " "
-        name_signal_graph = ''.join(name_signal_graph)
+        # Preparing the name and path to save the signal graph
+        name_signal_graph = "graph_" + path_to_signal.split(r'/')[-1].split(r'.')[0] # "graph_ + file name without extension
+        path_to_save_signal_graph = "/".join(path_to_signal.split(r'/')[0: -1]) + "/" + name_signal_graph + ".png" # " path to save the graph + "/" + name_signal_graph + extension
+        
+        # Preparing the name of the graph for the graph title
+        name_signal_graph = name_signal_graph.split('_')
+        name_signal_graph[0] = name_signal_graph[0].capitalize()
+        name_signal_graph = " ".join(name_signal_graph)
 
         # Plotting the signal graph
         plt.plot(time, data_signal)
@@ -86,7 +65,6 @@ def building_a_wave(path_to_signal = "../data/input_signal.wav"):
         plt.grid(alpha=0.1)
         plt.savefig(path_to_save_signal_graph)
         plt.show()
-
 
 if __name__ == "__main__":
     building_a_wave()

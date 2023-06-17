@@ -62,6 +62,17 @@ def fourier_transform_in_parallel(path_to_signal = "../data/input_signal.wav", n
             Please refer to the result of the "building_a_fourier_transform_graph" function implemented in the "building_a_fourier_transform_graph.py" file.
     '''
     
+    # Checking for the correctness of the input data
+    if type(path_to_signal) != str or '.wav' not in path_to_signal:
+        path_to_signal = "../data/input_signal.wav"
+        print(f'The path to the signal for fourier_transform_in_parallel is specified incorrectly. The default value is set:\n\t path_to_signal = "{path_to_signal}"')
+    else:
+        path_to_signal = "./" + path_to_signal
+
+    if type(need_to_plot) != bool:
+        need_to_plot = False
+        print(f'The boolean key value "need_to_plot" is specified incorrectly. The default value is set:\n\t need_to_plot = "{need_to_plot}"')
+
     with wave.open(path_to_signal, 'rb') as wf:
 
         SAMPLE_FORMAT = wf.getsampwidth() # Sound depth

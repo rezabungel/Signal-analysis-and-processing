@@ -30,9 +30,10 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
     if type(FILENAME) != str or '.wav' not in FILENAME:
         FILENAME = "../data/input_signal.wav"
         print(f'The filename for recording is set incorrectly. The default value is set:\n\t FILENAME = "{FILENAME}"')
+    else:
+        FILENAME = "./" + FILENAME
 
     if type(SECONDS) != int or SECONDS <= 0:
-        SECONDS = 5
         print(f'The recording duration is set incorrectly. The default value is set:\n\t SECONDS = {SECONDS}')
     
     if type(RATE) != int or RATE <= 0:
@@ -102,7 +103,6 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
         wf.setsampwidth(audio.get_sample_size(SAMPLE_FORMAT))
         wf.setframerate(RATE)
         wf.writeframes(b''.join(frames))
-
 
 if __name__ == "__main__":
     signal_recording()

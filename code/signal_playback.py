@@ -19,6 +19,8 @@ def signal_playback(FILENAME = "../data/output_signal.wav"): # FILENAME must con
     if type(FILENAME) != str or '.wav' not in FILENAME:
         FILENAME = "../data/output_signal.wav"
         print(f'The filename for playback is set incorrectly. The default value is set:\n\t FILENAME = "{FILENAME}"')
+    else:
+        FILENAME = "./" + FILENAME
     
     with wave.open(FILENAME, 'rb') as wf:
         audio = pyaudio.PyAudio()  # Initialize PyAudio object
@@ -67,7 +69,6 @@ def signal_playback(FILENAME = "../data/output_signal.wav"): # FILENAME must con
         stream.close()
 
         audio.terminate()  # Audio System Close
-
 
 if __name__ == "__main__":
     signal_playback()

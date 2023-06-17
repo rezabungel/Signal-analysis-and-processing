@@ -65,6 +65,8 @@ def creating_a_signal(data_signal,
     if type(FILENAME) != str or '.wav' not in FILENAME:
         FILENAME = "../data/output_signal.wav"
         print(f'The filename for creating is set incorrectly. The default value is set:\n\t FILENAME = "{FILENAME}"')
+    else:
+        FILENAME = "./" + FILENAME
 
     if type(RATE) != int or RATE <= 0:
         RATE = 44100
