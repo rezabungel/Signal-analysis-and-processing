@@ -58,6 +58,7 @@ def building_a_wave(path_to_signal = "../data/input_signal.wav"):
         name_signal_graph = " ".join(name_signal_graph)
 
         # Plotting the signal graph
+        plt.subplots()
         plt.plot(time, data_signal)
         plt.title(name_signal_graph)
         plt.xlabel('Time')

@@ -30,6 +30,7 @@ def building_a_fourier_transform_graph(frequency, amplitude, path_to_signal="../
     name_fourier_transform_graph = " ".join(name_fourier_transform_graph)
 
     # Plotting the discrete Fourier transform graph
+    plt.subplots()
     plt.stem(frequency, amplitude)
     plt.title(name_fourier_transform_graph)
     plt.xlabel('Frequency')
