@@ -5,6 +5,7 @@ The signal is recorded from your microphone and saved to a file with the extensi
 
 import pyaudio
 import wave
+import cmath
 
 SAMPLE_FORMAT = pyaudio.paInt16  # Sound depth = 16 bits = 2 bytes
 
@@ -34,6 +35,7 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
         FILENAME = "./" + FILENAME
 
     if type(SECONDS) != int or SECONDS <= 0:
+        SECONDS = 5
         print(f'The recording duration is set incorrectly. The default value is set:\n\t SECONDS = {SECONDS}')
     
     if type(RATE) != int or RATE <= 0:
@@ -89,7 +91,7 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
         data = stream.read(CHUNK) # reading a string of bytes long CHUNK * SAMPLE_FORMAT
         frames.append(data)
 
-    print(f"Finished recording!\n")
+    print(f"Finished recording!")
 
     # Stop and close the stream
     stream.stop_stream()
@@ -103,6 +105,13 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
         wf.setsampwidth(audio.get_sample_size(SAMPLE_FORMAT))
         wf.setframerate(RATE)
         wf.writeframes(b''.join(frames))
+
+    # Checking if the volume of recorded data matches a power of two
+    len_data_signal = int(RATE / CHUNK * SECONDS)*CHUNK
+    if cmath.log(len_data_signal, 2).real-float(int(cmath.log(len_data_signal, 2).real)) != 0:
+        print(f'The recorded data volume does not match a power of two (the "fft" function cannot be used).\n')
+    else:
+        print(f'The recorded data volume corresponds to a power of two (the "fft" function can be used).\n')
 
 if __name__ == "__main__":
     signal_recording()
