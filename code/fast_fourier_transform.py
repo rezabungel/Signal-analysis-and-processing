@@ -27,7 +27,7 @@ def fft(data_signal):
         data_signal ("numpy.ndarray" with dtype=Depends_on_SAMPLE_FORMAT) - signal data. (note: the amount of data should be a power of two)
     The result of the function:
         Return values:
-            FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform (from index_start to the index_stop).
+            FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform.
     '''
 
     n = len(data_signal)  # n is a power of 2

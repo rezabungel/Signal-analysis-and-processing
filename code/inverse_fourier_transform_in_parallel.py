@@ -41,7 +41,7 @@ def iDFT(index_start, index_stop, N_FRAMES, FT):
 def mirror(FT_need_mirror):
     
     '''
-    The "mirror" function adds a mirror image of a complex conjugate array of the Fourier transform, which was obtained using the "fourier_transform_in_parallel" or "fourier_transform" function.
+    The "mirror" function adds a mirror image of a complex conjugate array of the Fourier transform, which was obtained using the "fast_fourier_transform", "fourier_transform_in_parallel" or "fourier_transform" function.
     The following parameters are passed to the function:
         FT_need_mirror ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform. (note: elements from the first to the penultimate will be mirrored and complex conjugate).
     The result of the function:
@@ -69,6 +69,16 @@ def inverse_fourier_transform_in_parallel(FT, mirror_image=False):
             iFT ("numpy.ndarray" with dtype="numpy.complex128") - values of the inverse discrete Fourier transform;
             data_signal ("numpy.ndarray" with dtype="numpy.int32") - value of the signal data.
     '''
+
+    # Checking for the correctness of the input data
+    if type(FT) != np.ndarray or FT.dtype != np.complex128:
+        print(f'Error in the values of the discrete Fourier transform. Was expected "numpy.ndarray" with dtype="numpy.complex128".')
+        print(f"The function terminates with a return of -2.")
+        return -2
+
+    if type(mirror_image) != bool:
+        mirror_image = False
+        print(f'The boolean key value "mirror_image" is specified incorrectly. The default value is set:\n\t mirror_image = "{mirror_image}"')
 
     if mirror_image == True:
         FT = mirror(FT)
