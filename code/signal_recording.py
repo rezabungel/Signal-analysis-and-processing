@@ -6,11 +6,12 @@ The signal is recorded from your microphone and saved to a file with the extensi
 import pyaudio
 import wave
 import cmath
+import math
 
 SAMPLE_FORMAT = pyaudio.paInt16  # Sound depth = 16 bits = 2 bytes
 
 def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must contain the path and file name of the record. FILENAME must end in ".wav"
-                     SECONDS = 5, # Recording duration
+                     SECONDS = 5.0, # Recording duration
                      RATE = 44100, # Sampling rate - number of frames per second
                      CHUNK = 1024, # The number of frames per one "request" to the microphone (read in pieces)
                      CHANNELS = 1, # Mono
@@ -20,9 +21,9 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
     This function allows you to record a signal using a microphone.
     The following parameters are passed to the function:
         FILENAME ("str") - path to save the file and its name with ".wav" extension. (example: "../the_path_to_save_the_file/name_of_the_saved_file.wav");
-        SECONDS ("int" and greater than 0) - recording duration in seconds;
+        SECONDS ("float" and greater than 0) - recording duration in seconds (note: The "int" type is supported, it will be cast to the "float" type.);
         RATE ("int" and greater than 0) - sampling rate in hertz. (note: 44100 is enough for a voice);
-        CHUNK ("int" and greater than 0) - number of frames per one "request" to the microphone. (note: 1024 is enough for a voice);
+        CHUNK ("int", greater than 0 and a power of two) - number of frames per one "request" to the microphone. (note: 1024 is enough for a voice);
         CHANNELS ("int" and greater than 0) - number of audio tracks. (note: use 1 (mono sound)).
     The result of the function will be a recorded signal, saved in accordance with the passed parameters.
     '''
@@ -34,21 +35,67 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
     else:
         FILENAME = "./" + FILENAME
 
-    if type(SECONDS) != int or SECONDS <= 0:
-        SECONDS = 5
+    if type(SECONDS) == int and SECONDS > 0:
+        SECONDS = float(SECONDS)
+    elif type(SECONDS) != float or SECONDS <= 0:
+        SECONDS = 5.0
         print(f'The recording duration is set incorrectly. The default value is set:\n\t SECONDS = {SECONDS}')
-    
+    SECONDS = round(SECONDS, 2)
+
     if type(RATE) != int or RATE <= 0:
         RATE = 44100
         print(f'The sampling rate is set incorrectly. The default value is set:\n\t RATE = {RATE}')
 
-    if type(CHUNK) != int or CHUNK <= 0:
+    if type(CHUNK) != int or CHUNK <= 0 or cmath.log(CHUNK, 2).real-float(int(cmath.log(CHUNK, 2).real)) != 0:
         CHUNK = 1024
         print(f'The number of frames per one "request" to the microphone is set incorrectly. The default value is set:\n\t CHUNK = {CHUNK}')
 
     if type(CHANNELS) != int or CHANNELS <= 0:
         CHANNELS = 1
         print(f'The number of channels is set incorrectly. The default value is set:\n\t CHANNELS = {CHANNELS}')
+
+    # Checking if the volume of recorded data matches a power of two. (If it doesn't match, it can be corrected by changing the recording duration.)
+    len_data_signal = int(RATE / CHUNK * SECONDS)*CHUNK # It is possible to use only 'int(RATE / CHUNK * SECONDS)' since CHUNK is a power of two
+    if cmath.log(len_data_signal, 2).real-float(int(cmath.log(len_data_signal, 2).real)) != 0:
+        print(f'The recorded data volume will not match a power of two (the "fft" function will not be usable).')
+        while True:
+            try:
+                while True:
+                    answer = int(input('To use the "fft" function, you will have to change the recording duration. Do you want to do this (1/0)?\t'))
+                    if answer == 0 or answer == 1:
+                        break
+                    else:
+                        print(f"Invalid input. Non-existent answer.")
+                break
+            except ValueError:
+                print(f"Invalid input. You didn't enter a number.")
+
+        if answer == 1:
+            temp = cmath.log(int(RATE / CHUNK * SECONDS), 2).real
+            hint = [.0, .0]
+            
+            hint[0] = (2**float(int(temp))) / (RATE / CHUNK)
+            hint[1] = (2**float(int(temp+1))) / (RATE / CHUNK)
+
+            hint[0] = math.ceil(hint[0]*100)/100
+            hint[1] = math.ceil(hint[1]*100)/100
+
+            while True:
+                try:
+                    while True:
+                        answer = int(input(f'Choose the recording duration: \n0: {hint[0]} \n1: {hint[1]} \nAnswer... '))
+                        if answer == 0 or answer == 1:
+                            break
+                        else:
+                            print(f"Invalid input. Non-existent answer.")
+                    break
+                except ValueError:
+                    print(f"Invalid input. You didn't enter a number.")
+
+            SECONDS = hint[answer]
+            print(f'Now the recorded data volume will correspond to a power of two (the "fft" function will be usable).')
+    else:
+        print(f'The recorded data volume will correspond to a power of two (the "fft" function will be usable).')
 
     audio = pyaudio.PyAudio()  # Initialize PyAudio object
 
@@ -91,7 +138,7 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
         data = stream.read(CHUNK) # reading a string of bytes long CHUNK * SAMPLE_FORMAT
         frames.append(data)
 
-    print(f"Finished recording!")
+    print(f"Finished recording!\n")
 
     # Stop and close the stream
     stream.stop_stream()
@@ -105,13 +152,6 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
         wf.setsampwidth(audio.get_sample_size(SAMPLE_FORMAT))
         wf.setframerate(RATE)
         wf.writeframes(b''.join(frames))
-
-    # Checking if the volume of recorded data matches a power of two
-    len_data_signal = int(RATE / CHUNK * SECONDS)*CHUNK
-    if cmath.log(len_data_signal, 2).real-float(int(cmath.log(len_data_signal, 2).real)) != 0:
-        print(f'The recorded data volume does not match a power of two (the "fft" function cannot be used).\n')
-    else:
-        print(f'The recorded data volume corresponds to a power of two (the "fft" function can be used).\n')
 
 if __name__ == "__main__":
     signal_recording()
