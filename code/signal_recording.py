@@ -97,7 +97,7 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
     else:
         print(f'The recorded data volume will correspond to a power of two (the "fft" function will be usable).')
 
-    audio = pyaudio.PyAudio()  # Initialize PyAudio object
+    audio = pyaudio.PyAudio() # Initialize PyAudio object
 
     while True: # The loop runs until the correct data is entered
         try:

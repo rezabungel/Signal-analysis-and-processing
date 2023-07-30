@@ -70,8 +70,8 @@ def inverse_fourier_transform(FT, mirror_image=False):
                 progress +=10
                 print(f"iDFT progress: {progress}% \t Iteration: {to_track_progress}\{N_FRAMES}")
                 to_track_progress += int(N_FRAMES/10)
-        for j in range(N_FRAMES):
-            iFT[i] += FT[j] * (cmath.cos((2*cmath.pi*i*j)/N_FRAMES) + 1j*cmath.sin((2*cmath.pi*i*j)/N_FRAMES))
+        precomp = 2*cmath.pi*i/N_FRAMES
+        iFT[i] = sum(FT[j] * (cmath.cos(precomp*j) + 1j*cmath.sin(precomp*j)) for j in range(N_FRAMES))
         iFT[i] = iFT[i] * (1/N_FRAMES)
 
     end_time = time.time() - start_time # Stopping the stopwatch

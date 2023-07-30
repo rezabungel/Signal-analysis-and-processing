@@ -21,9 +21,9 @@ def signal_playback(FILENAME = "../data/output_signal.wav"): # FILENAME must con
         print(f'The filename for playback is set incorrectly. The default value is set:\n\t FILENAME = "{FILENAME}"')
     else:
         FILENAME = "./" + FILENAME
-    
+
     with wave.open(FILENAME, 'rb') as wf:
-        audio = pyaudio.PyAudio()  # Initialize PyAudio object
+        audio = pyaudio.PyAudio() # Initialize PyAudio object
 
         SAMPLE_FORMAT = audio.get_format_from_width(wf.getsampwidth()) # Sound depth
         CHANNELS = wf.getnchannels() # Number of channels
@@ -59,7 +59,7 @@ def signal_playback(FILENAME = "../data/output_signal.wav"): # FILENAME must con
                 print(f"Invalid input. You didn't enter a number.")
             except OSError:
                 print(f"Invalid playback device.")
-        
+
         print(f"Start of signal playback...")
         stream.write(wf.readframes(N_FRAMES)) # Sending a signal to the speaker
         print(f"End of signal playback!\n")
@@ -68,7 +68,7 @@ def signal_playback(FILENAME = "../data/output_signal.wav"): # FILENAME must con
         stream.stop_stream()
         stream.close()
 
-        audio.terminate()  # Audio System Close
+        audio.terminate() # Audio System Close
 
 if __name__ == "__main__":
     signal_playback()

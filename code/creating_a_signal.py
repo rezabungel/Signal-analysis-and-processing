@@ -10,8 +10,7 @@ import numpy as np
 import pyaudio
 import wave
 
-SAMPLE_FORMAT = pyaudio.paInt16  # Sound depth = 16 bits = 2 bytes
-
+SAMPLE_FORMAT = pyaudio.paInt16 # Sound depth = 16 bits = 2 bytes
 
 def convert_to_int16(data_signal):
 
@@ -89,8 +88,8 @@ def creating_a_signal(data_signal,
         wf.setsampwidth(pyaudio.get_sample_size(SAMPLE_FORMAT))
         wf.setframerate(RATE)
         wf.writeframes(frames)
-        print(f'Finished signal creation. The signal is saved in the "{FILENAME}" file!\n')
 
+    print(f'Finished signal creation. The signal is saved in the "{FILENAME}" file!\n')
 
 if __name__ == "__main__":
     data_signal = np.array([5, 31, 14, -4, -8, -14, 15, 54, 57, 45, 16, -17, -49, -82, -71, -53, -27, -8, -37, -91, -122, -130, -126, -114, -102])

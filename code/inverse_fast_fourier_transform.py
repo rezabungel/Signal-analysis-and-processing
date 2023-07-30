@@ -26,9 +26,9 @@ def ifft(FT):
         Return values:
             iFT ("numpy.ndarray" with dtype="numpy.complex128") - values of the inverse discrete Fourier transform.
     '''
-    
+
     def iFFT(FT):
-        n = len(FT)  # n is a power of 2
+        n = len(FT) # n is a power of 2
         if n == 1:
             return FT
         omega = (cmath.cos(2*cmath.pi/n) + 1j*cmath.sin(2*cmath.pi/n))
@@ -60,7 +60,7 @@ def mirror(FT_need_mirror):
     mirror_image = np.flip(mirror_image)
     mirror_image = mirror_image.conjugate()
     FT_need_mirror = np.concatenate([FT_need_mirror, mirror_image])
-    
+
     return FT_need_mirror
 
 def inverse_fast_fourier_transform(FT, mirror_image=False):
@@ -98,7 +98,7 @@ def inverse_fast_fourier_transform(FT, mirror_image=False):
     print(f"The beginning of the calculation of the inverse fast Fourier transform.")
     print(f"iFFT progress...")
     start_time = time.time() # Starting the stopwatch
-    
+
     iFT = ifft(FT)
 
     end_time = time.time() - start_time # Stopping the stopwatch

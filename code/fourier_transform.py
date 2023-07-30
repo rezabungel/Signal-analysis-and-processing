@@ -46,57 +46,54 @@ def fourier_transform(path_to_signal = "../data/input_signal.wav", need_to_plot 
         print(f'The boolean key value "need_to_plot" is specified incorrectly. The default value is set:\n\t need_to_plot = "{need_to_plot}"')
 
     with wave.open(path_to_signal, 'rb') as wf:
-
         SAMPLE_FORMAT = wf.getsampwidth() # Sound depth
         RATE = wf.getframerate() # Sampling rate
         N_FRAMES = wf.getnframes() # The number of frames
-
         data_signal = np.frombuffer(wf.readframes(N_FRAMES), dtype=types[SAMPLE_FORMAT]) # Reading the signal from the file and converting bytes to int
-        
-        # One of the properties of the discrete Fourier transform: symmetry with respect to the Nyquist frequency (the rule applies to a real signal).
-        # We will consider the Fourier transform from 0 to the Nyquist frequency, and not from 0 to the Sampling frequency. 
-        # To get the Fourier transform from 0 to the Sampling frequency, you need to mirror image the complex conjugate numbers from the Fourier transform starting from the first element to the penultimate element.
-        Nyquist_frequency = int(RATE/2)
-        index_Nyquist_frequency = int(N_FRAMES/2) + 1
 
-        to_track_progress = int(index_Nyquist_frequency/10)
-        progress = 0
+    # One of the properties of the discrete Fourier transform: symmetry with respect to the Nyquist frequency (the rule applies to a real signal).
+    # We will consider the Fourier transform from 0 to the Nyquist frequency, and not from 0 to the Sampling frequency. 
+    # To get the Fourier transform from 0 to the Sampling frequency, you need to mirror image the complex conjugate numbers from the Fourier transform starting from the first element to the penultimate element.
+    Nyquist_frequency = int(RATE/2)
+    index_Nyquist_frequency = int(N_FRAMES/2) + 1
 
-        FT = np.zeros(shape=index_Nyquist_frequency, dtype=np.complex128) # Declaring an array for the Fourier transform
+    to_track_progress = int(index_Nyquist_frequency/10)
+    progress = 0
 
-        print(f"Info about Fourier transform:")
-        print(f"\tSampling rate = {RATE}")
-        print(f"\tNyquist frequency = {Nyquist_frequency}")
-        print(f"\tRequired number of iterations for the Fourier transform = {index_Nyquist_frequency}")
+    FT = np.zeros(shape=index_Nyquist_frequency, dtype=np.complex128) # Declaring an array for the Fourier transform
 
-        print(f"The beginning of the calculation of the discrete Fourier transform.")
-        print(f"DFT progress: {progress}% \t Iteration: {0}\{index_Nyquist_frequency}")
-        start_time = time.time() # Starting the stopwatch
+    print(f"Info about Fourier transform:")
+    print(f"\tSampling rate = {RATE}")
+    print(f"\tNyquist frequency = {Nyquist_frequency}")
+    print(f"\tRequired number of iterations for the Fourier transform = {index_Nyquist_frequency}")
 
-        # Discrete Fourier transform (DFT)
-        for i in range(index_Nyquist_frequency):
-            if i==to_track_progress and progress < 90:
-                progress +=10
-                print(f"DFT progress: {progress}% \t Iteration: {to_track_progress}\{index_Nyquist_frequency}")
-                to_track_progress += int(index_Nyquist_frequency/10)
-            for j in range(N_FRAMES):
-                FT[i] += data_signal[j] * (cmath.cos((2*cmath.pi*i*j)/N_FRAMES)-1j*cmath.sin((2*cmath.pi*i*j)/N_FRAMES)) 
-    
-        end_time = time.time() - start_time # Stopping the stopwatch
-        print(f"DFT progress: {100}% \t Iteration: {index_Nyquist_frequency}\{index_Nyquist_frequency}")
-        print(f"The end of the calculation of the discrete Fourier transform. Time spent {'%.3f' % end_time} seconds.\n")
-        
-        amplitude = abs(FT) # Unnormalized signal amplitude
-        amplitude = 2*amplitude/N_FRAMES # Normalized signal amplitude
+    print(f"The beginning of the calculation of the discrete Fourier transform.")
+    print(f"DFT progress: {progress}% \t Iteration: {0}\{index_Nyquist_frequency}")
+    start_time = time.time() # Starting the stopwatch
 
-        frequency = np.zeros(shape=index_Nyquist_frequency) # Declaring an array of frequencies of the signal spectrum
-        for i in range(index_Nyquist_frequency):
-            frequency[i] = i*RATE / N_FRAMES
-        
-        if need_to_plot == True:
-            building_a_fourier_transform_graph.building_a_fourier_transform_graph(frequency, amplitude, path_to_signal) # Plotting a discrete Fourier transform
+    # Discrete Fourier transform (DFT)
+    for i in range(index_Nyquist_frequency):
+        if i==to_track_progress and progress < 90:
+            progress +=10
+            print(f"DFT progress: {progress}% \t Iteration: {to_track_progress}\{index_Nyquist_frequency}")
+            to_track_progress += int(index_Nyquist_frequency/10)
+        precomp = 2*cmath.pi*i/N_FRAMES
+        FT[i] = sum(data_signal[j] * (cmath.cos(precomp * j) - 1j * cmath.sin(precomp * j)) for j in range(N_FRAMES))
 
-        return (FT, amplitude, frequency)
+    end_time = time.time() - start_time # Stopping the stopwatch
+    print(f"DFT progress: {100}% \t Iteration: {index_Nyquist_frequency}\{index_Nyquist_frequency}")
+    print(f"The end of the calculation of the discrete Fourier transform. Time spent {'%.3f' % end_time} seconds.\n")
+
+    amplitude = abs(FT) # Unnormalized signal amplitude
+    amplitude = 2*amplitude/N_FRAMES # Normalized signal amplitude
+
+    # Declaring an array of frequencies of the signal spectrum
+    frequency = np.arange(index_Nyquist_frequency) * RATE / N_FRAMES
+
+    if need_to_plot == True:
+        building_a_fourier_transform_graph.building_a_fourier_transform_graph(frequency, amplitude, path_to_signal) # Plotting a discrete Fourier transform
+
+    return (FT, amplitude, frequency)
 
 if __name__ == "__main__":
     fourier_transform()

@@ -30,7 +30,7 @@ def fft(data_signal):
             FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform.
     '''
 
-    n = len(data_signal)  # n is a power of 2
+    n = len(data_signal) # n is a power of 2
     if n == 1:
         return data_signal
     omega = cmath.cos(2*cmath.pi/n) - 1j*cmath.sin(2*cmath.pi/n)
@@ -70,52 +70,47 @@ def fast_fourier_transform(path_to_signal="../data/input_signal.wav", need_to_pl
         print(f'The boolean key value "need_to_plot" is specified incorrectly. The default value is set:\n\t need_to_plot = "{need_to_plot}"')
 
     with wave.open(path_to_signal, 'rb') as wf:
-
         SAMPLE_FORMAT = wf.getsampwidth() # Sound depth
         RATE = wf.getframerate() # Sampling rate
         N_FRAMES = wf.getnframes() # The number of frames
+        data_signal = np.frombuffer(wf.readframes(N_FRAMES), dtype=types[SAMPLE_FORMAT]) # Reading the signal from the file and converting bytes to int
 
-        # Reading the signal from the file and converting bytes to int
-        data_signal = np.frombuffer(wf.readframes(N_FRAMES), dtype=types[SAMPLE_FORMAT])
+    # Checking that the amount of data corresponds to a power of two.
+    if cmath.log(len(data_signal), 2).real-float(int(cmath.log(len(data_signal), 2).real)) != 0:
+        print(f'The amount of data does not correspond to a power of two (the "fft" function cannot be used).')
+        print(f"The function terminates with a return of -1.")
+        return -1
 
-        # Checking that the amount of data corresponds to a power of two.
-        if cmath.log(len(data_signal), 2).real-float(int(cmath.log(len(data_signal), 2).real)) != 0:
-            print(f'The amount of data does not correspond to a power of two (the "fft" function cannot be used).')
-            print(f"The function terminates with a return of -1.")
-            return -1
+    # One of the properties of the discrete Fourier transform: symmetry with respect to the Nyquist frequency (the rule applies to a real signal).
+    # We will consider the Fourier transform from 0 to the Nyquist frequency, and not from 0 to the Sampling frequency.
+    # To get the Fourier transform from 0 to the Sampling frequency, you need to mirror image the complex conjugate numbers from the Fourier transform starting from the first element to the penultimate element.
+    Nyquist_frequency = int(RATE/2)
+    index_Nyquist_frequency = int(N_FRAMES/2) + 1
 
-        # One of the properties of the discrete Fourier transform: symmetry with respect to the Nyquist frequency (the rule applies to a real signal).
-        # We will consider the Fourier transform from 0 to the Nyquist frequency, and not from 0 to the Sampling frequency.
-        # To get the Fourier transform from 0 to the Sampling frequency, you need to mirror image the complex conjugate numbers from the Fourier transform starting from the first element to the penultimate element.
-        Nyquist_frequency = int(RATE/2)
-        index_Nyquist_frequency = int(N_FRAMES/2) + 1
+    print(f"Info about Fourier transform:")
+    print(f"\tSampling rate = {RATE}")
+    print(f"\tNyquist frequency = {Nyquist_frequency}")
 
-        print(f"Info about Fourier transform:")
-        print(f"\tSampling rate = {RATE}")
-        print(f"\tNyquist frequency = {Nyquist_frequency}")
+    print(f"The beginning of the calculation of the fast Fourier transform.")
+    print(f"FFT progress...")
+    start_time = time.time() # Starting the stopwatch
 
-        print(f"The beginning of the calculation of the fast Fourier transform.")
-        print(f"FFT progress...")
-        start_time = time.time() # Starting the stopwatch
+    FT = fft(data_signal)
+    FT = FT[:index_Nyquist_frequency]
 
-        FT = fft(data_signal)
-        FT = FT[:index_Nyquist_frequency]
+    end_time = time.time() - start_time # Stopping the stopwatch
+    print(f"The end of the calculation of the fast Fourier transform. Time spent {'%.3f' % end_time} seconds.\n")
 
-        end_time = time.time() - start_time # Stopping the stopwatch
-        print(f"The end of the calculation of the fast Fourier transform. Time spent {'%.3f' % end_time} seconds.\n")
+    amplitude = abs(FT) # Unnormalized signal amplitude
+    amplitude = 2*amplitude/N_FRAMES # Normalized signal amplitude
 
-        amplitude = abs(FT) # Unnormalized signal amplitude
-        amplitude = 2*amplitude/N_FRAMES # Normalized signal amplitude
+    # Declaring an array of frequencies of the signal spectrum
+    frequency = np.arange(index_Nyquist_frequency) * RATE / N_FRAMES
 
-        # Declaring an array of frequencies of the signal spectrum
-        frequency = np.zeros(shape=index_Nyquist_frequency)
-        for i in range(index_Nyquist_frequency):
-            frequency[i] = i*RATE / N_FRAMES
+    if need_to_plot == True:
+        building_a_fourier_transform_graph.building_a_fourier_transform_graph(frequency, amplitude, path_to_signal) # Plotting a discrete Fourier transform
 
-        if need_to_plot == True:
-            building_a_fourier_transform_graph.building_a_fourier_transform_graph(frequency, amplitude, path_to_signal) # Plotting a discrete Fourier transform
-
-        return (FT, amplitude, frequency)
+    return (FT, amplitude, frequency)
 
 if __name__ == "__main__":
     fast_fourier_transform()

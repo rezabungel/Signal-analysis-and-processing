@@ -39,10 +39,10 @@ def DFT(index_start, index_stop, N_FRAMES, data_signal):
     FT = np.zeros(shape=(int(N_FRAMES/2) + 1), dtype=np.complex128)
     
     for i in range(index_start, index_stop):
-        if i==(index_stop-1):
-            print(f"DFT progress: +{12.5}% \t Iteration: {'%6d' % index_start} -> {'%6d' % i}\{int(N_FRAMES/2) + 1} completed.")
-        for j in range(N_FRAMES):
-            FT[i] += data_signal[j] * (cmath.cos((2*cmath.pi*i*j)/N_FRAMES)-1j*cmath.sin((2*cmath.pi*i*j)/N_FRAMES)) 
+        precomp = 2*cmath.pi*i/N_FRAMES
+        FT[i] = sum(data_signal[j] * (cmath.cos(precomp * j) - 1j * cmath.sin(precomp * j)) for j in range(N_FRAMES))
+    else:
+        print(f"DFT progress: +{12.5}% \t Iteration: {'%6d' % index_start} -> {'%6d' % i}\{int(N_FRAMES/2) + 1} completed.")
     
     return FT
 
@@ -61,7 +61,7 @@ def fourier_transform_in_parallel(path_to_signal = "../data/input_signal.wav", n
         Discrete Fourier transform graph (if "need_to_plot" = True):
             Please refer to the result of the "building_a_fourier_transform_graph" function implemented in the "building_a_fourier_transform_graph.py" file.
     '''
-    
+
     # Checking for the correctness of the input data
     if type(path_to_signal) != str or '.wav' not in path_to_signal:
         path_to_signal = "../data/input_signal.wav"
@@ -74,69 +74,66 @@ def fourier_transform_in_parallel(path_to_signal = "../data/input_signal.wav", n
         print(f'The boolean key value "need_to_plot" is specified incorrectly. The default value is set:\n\t need_to_plot = "{need_to_plot}"')
 
     with wave.open(path_to_signal, 'rb') as wf:
-
         SAMPLE_FORMAT = wf.getsampwidth() # Sound depth
         RATE = wf.getframerate() # Sampling rate
         N_FRAMES = wf.getnframes() # The number of frames
-
         data_signal = np.frombuffer(wf.readframes(N_FRAMES), dtype=types[SAMPLE_FORMAT]) # Reading the signal from the file and converting bytes to int
-        
-        # One of the properties of the discrete Fourier transform: symmetry with respect to the Nyquist frequency (the rule applies to a real signal).
-        # We will consider the Fourier transform from 0 to the Nyquist frequency, and not from 0 to the Sampling frequency. 
-        # To get the Fourier transform from 0 to the Sampling frequency, you need to mirror image the complex conjugate numbers from the Fourier transform starting from the first element to the penultimate element.
-        Nyquist_frequency = int(RATE/2)
-        index_Nyquist_frequency = int(N_FRAMES/2) + 1
 
-        FT = np.zeros(shape=index_Nyquist_frequency, dtype=np.complex128) # Declaring an array for the Fourier transform
+    # One of the properties of the discrete Fourier transform: symmetry with respect to the Nyquist frequency (the rule applies to a real signal).
+    # We will consider the Fourier transform from 0 to the Nyquist frequency, and not from 0 to the Sampling frequency. 
+    # To get the Fourier transform from 0 to the Sampling frequency, you need to mirror image the complex conjugate numbers from the Fourier transform starting from the first element to the penultimate element.
+    Nyquist_frequency = int(RATE/2)
+    index_Nyquist_frequency = int(N_FRAMES/2) + 1
 
-        print(f"Info about Fourier transform:")
-        print(f"\tSampling rate = {RATE}")
-        print(f"\tNyquist frequency = {Nyquist_frequency}")
-        print(f"\tRequired number of iterations for the Fourier transform = {index_Nyquist_frequency}")
+    FT = np.zeros(shape=index_Nyquist_frequency, dtype=np.complex128) # Declaring an array for the Fourier transform
 
-        print(f"The beginning of the calculation of the discrete Fourier transform.")
-        print(f"DFT progress: {0}% \t Iteration: {0}\{index_Nyquist_frequency}")
-        start_time = time.time() # Starting the stopwatch
+    print(f"Info about Fourier transform:")
+    print(f"\tSampling rate = {RATE}")
+    print(f"\tNyquist frequency = {Nyquist_frequency}")
+    print(f"\tRequired number of iterations for the Fourier transform = {index_Nyquist_frequency}")
 
-        # Creating calculation intervals for each core
-        step = int(index_Nyquist_frequency/8)
-        interval = np.zeros(9, dtype=np.uint32)
-        interval[0] = 0
-        for i in range(1, 8):
-            interval[i] = interval[i-1] + step
-        interval[8] = index_Nyquist_frequency
+    print(f"The beginning of the calculation of the discrete Fourier transform.")
+    print(f"DFT progress: {0}% \t Iteration: {0}\{index_Nyquist_frequency}")
+    start_time = time.time() # Starting the stopwatch
 
-        # Parallelization of DFT calculation on 8 cores. (If there are fewer or more cores, this is not a problem)
-        with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
-            temp = p.starmap(DFT, [(interval[0], interval[1], N_FRAMES, data_signal),
-                                   (interval[1], interval[2], N_FRAMES, data_signal),
-                                   (interval[2], interval[3], N_FRAMES, data_signal),
-                                   (interval[3], interval[4], N_FRAMES, data_signal),
-                                   (interval[4], interval[5], N_FRAMES, data_signal),
-                                   (interval[5], interval[6], N_FRAMES, data_signal),
-                                   (interval[6], interval[7], N_FRAMES, data_signal),
-                                   (interval[7], interval[8], N_FRAMES, data_signal)])
+    # Creating calculation intervals for each core
+    step = int(index_Nyquist_frequency/8)
+    interval = np.zeros(9, dtype=np.uint32)
+    interval[0] = 0
+    for i in range(1, 8):
+        interval[i] = interval[i-1] + step
+    interval[8] = index_Nyquist_frequency
 
-        # Assembling data from a parallel computation into a single data array
-        for i in range(len(interval)-1):
-            for j in range(interval[i], interval[i+1]):
-                FT[j]=temp[i][j]
+    # Parallelization of DFT calculation on 8 cores. (If there are fewer or more cores, this is not a problem)
+    with multiprocessing.Pool(multiprocessing.cpu_count()) as p:
+        temp = p.starmap(DFT, [(interval[0], interval[1], N_FRAMES, data_signal),
+                                (interval[1], interval[2], N_FRAMES, data_signal),
+                                (interval[2], interval[3], N_FRAMES, data_signal),
+                                (interval[3], interval[4], N_FRAMES, data_signal),
+                                (interval[4], interval[5], N_FRAMES, data_signal),
+                                (interval[5], interval[6], N_FRAMES, data_signal),
+                                (interval[6], interval[7], N_FRAMES, data_signal),
+                                (interval[7], interval[8], N_FRAMES, data_signal)])
 
-        amplitude = abs(FT) # Unnormalized signal amplitude
-        amplitude = 2*amplitude/N_FRAMES # Normalized signal amplitude
+    # Assembling data from a parallel computation into a single data array
+    for i in range(len(interval)-1):
+        for j in range(interval[i], interval[i+1]):
+            FT[j]=temp[i][j]
 
-        frequency = np.zeros(shape=index_Nyquist_frequency) # Declaring an array of frequencies of the signal spectrum
-        for i in range(index_Nyquist_frequency):
-            frequency[i] = i*RATE/N_FRAMES
-        
-        end_time = time.time() - start_time # Stopping the stopwatch
-        print(f"DFT progress: {100}% \t Iteration: {index_Nyquist_frequency}\{index_Nyquist_frequency}")
-        print(f"The end of the calculation of the discrete Fourier transform. Time spent {'%.3f' % end_time} seconds.\n")
+    end_time = time.time() - start_time # Stopping the stopwatch
+    print(f"DFT progress: {100}% \t Iteration: {index_Nyquist_frequency}\{index_Nyquist_frequency}")
+    print(f"The end of the calculation of the discrete Fourier transform. Time spent {'%.3f' % end_time} seconds.\n")
 
-        if need_to_plot == True:
-            building_a_fourier_transform_graph.building_a_fourier_transform_graph(frequency, amplitude, path_to_signal) # Plotting a discrete Fourier transform
+    amplitude = abs(FT) # Unnormalized signal amplitude
+    amplitude = 2*amplitude/N_FRAMES # Normalized signal amplitude
 
-        return (FT, amplitude, frequency)
+    # Declaring an array of frequencies of the signal spectrum
+    frequency = np.arange(index_Nyquist_frequency) * RATE / N_FRAMES
+
+    if need_to_plot == True:
+        building_a_fourier_transform_graph.building_a_fourier_transform_graph(frequency, amplitude, path_to_signal) # Plotting a discrete Fourier transform
+
+    return (FT, amplitude, frequency)
 
 if __name__ == "__main__":
     multiprocessing.freeze_support() # Enable support for multiprocessing

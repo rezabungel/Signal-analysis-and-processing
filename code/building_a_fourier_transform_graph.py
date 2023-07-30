@@ -23,7 +23,7 @@ def building_a_fourier_transform_graph(frequency, amplitude, path_to_signal="../
     # Preparing the name of the discrete Fourier transform graph and the path to save the discrete Fourier transform graph.
     name_fourier_transform_graph = "fourier_transform_graph_" + path_to_signal.split(r'/')[-1].split(r'.')[0] # "fourier_transform_graph_" + file name without extension
     path_to_save_fourier_transform_graph = "/".join(path_to_signal.split(r'/')[0: -1]) + "/" + name_fourier_transform_graph + ".png" # path to save the graph + "/" + name_fourier_transform_graph + extension
-    
+
     # Preparing the name of the graph for the graph title.
     name_fourier_transform_graph = name_fourier_transform_graph.split('_')
     name_fourier_transform_graph[0] = name_fourier_transform_graph[0].capitalize()

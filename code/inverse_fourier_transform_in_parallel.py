@@ -30,12 +30,12 @@ def iDFT(index_start, index_stop, N_FRAMES, FT):
     iFT = np.zeros(shape=N_FRAMES, dtype=np.complex128)
 
     for i in range(index_start, index_stop):
-        if i==(index_stop-1):
-            print(f"iDFT progress: +{12.5}% \t Iteration: {'%6d' % index_start} -> {'%6d' % i}\{N_FRAMES} completed.")
-        for j in range(N_FRAMES):
-            iFT[i] += FT[j] * (cmath.cos((2*cmath.pi*i*j)/N_FRAMES) + 1j*cmath.sin((2*cmath.pi*i*j)/N_FRAMES))
+        precomp = 2*cmath.pi*i/N_FRAMES
+        iFT[i] = sum(FT[j] * (cmath.cos(precomp*j) + 1j*cmath.sin(precomp*j)) for j in range(N_FRAMES))
         iFT[i] = iFT[i] * (1/N_FRAMES)
-    
+    else:
+        print(f"iDFT progress: +{12.5}% \t Iteration: {'%6d' % index_start} -> {'%6d' % i}\{N_FRAMES} completed.")
+
     return iFT
 
 def mirror(FT_need_mirror):
@@ -54,7 +54,7 @@ def mirror(FT_need_mirror):
     mirror_image = np.flip(mirror_image)
     mirror_image = mirror_image.conjugate()
     FT_need_mirror = np.concatenate([FT_need_mirror, mirror_image])
-    
+
     return FT_need_mirror
 
 def inverse_fourier_transform_in_parallel(FT, mirror_image=False):
