@@ -110,8 +110,8 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [documentation-pyaudio]: https://people.csail.mit.edu/hubert/pyaudio/docs/
 [documentation-numpy]: https://numpy.org/doc/
 [documentation-matplotlib]: https://matplotlib.org/stable/users/index.html
-[documentation-multiprocessing]: https://docs.python.org/3/library/multiprocessing.html
-[documentation-wave]: https://docs.python.org/3/library/wave.html
-[documentation-cmath]: https://docs.python.org/3/library/cmath.html
-[documentation-math]: https://docs.python.org/3/library/math.html
-[documentation-time]: https://docs.python.org/3/library/time.html
+[documentation-multiprocessing]: https://docs.python.org/3.10/library/multiprocessing.html
+[documentation-wave]: https://docs.python.org/3.10/library/wave.html
+[documentation-cmath]: https://docs.python.org/3.10/library/cmath.html
+[documentation-math]: https://docs.python.org/3.10/library/math.html
+[documentation-time]: https://docs.python.org/3.10/library/time.html

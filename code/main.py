@@ -88,6 +88,35 @@ def main():
             # plotted, and finally, it was reproduced through the speakers.
     # note: The graphs of the "input" and "output" signals will coincide.
 
+    # example 4
+    # In this example, the fast direct and inverse discrete Fourier transform algorithms are used for a signal with a frequency of 440 Hz.
+    # note: It assumes the existence of a file with a frequency of 440 Hz, and the volume of its data allows for the application of fast algorithms.
+            # One of such files exists in the "examples" folder located within the "data" directory.
+
+    filename_input = "../data/examples/signal_440hz_duration_11s-89ms.wav"
+    filename_output = "../data/reconstructed_signal_440hz_duration_11s-89ms.wav"
+    rate = 11025
+
+    print(f"A signal with a frequency of 440 Hz and a duration of 11 seconds 89 milliseconds will be played.")
+    signal_playback.signal_playback(FILENAME=filename_input)
+    building_a_wave.building_a_wave(path_to_signal=filename_input)
+
+    FT, amplitude, frequency = fast_fourier_transform.fast_fourier_transform(path_to_signal=filename_input, need_to_plot=True)
+
+    iFT, data_signal = inverse_fast_fourier_transform.inverse_fast_fourier_transform(FT=FT, mirror_image=True)
+
+    creating_a_signal.creating_a_signal(data_signal=data_signal, FILENAME=filename_output, RATE=rate, CHANNELS=1)
+    building_a_wave.building_a_wave(path_to_signal=filename_output)
+    print(f"The reconstructed signal with a frequency of 440 Hz and a duration of 11 seconds 89 milliseconds will be played.")
+    signal_playback.signal_playback(FILENAME=filename_output) 
+
+    # note: A signal of 440 Hz with a duration of 11 seconds 89 milliseconds was played, its graph
+            # was plotted, the direct discrete Fourier transform was applied with a graph of the
+            # result, then the inverse discrete Fourier transform was applied, the signal was
+            # reconstructed from the obtained data, its graph was plotted, and finally, it was
+            # reproduced through the speakers.
+    # note: The graphs of the "input" and "output" signals will coincide.
+
 if __name__ == "__main__":
     multiprocessing.freeze_support()  # Enable support for multiprocessing
     plt.ion()  # Enables interactive mode (The program continues to work after the graph is displayed)
