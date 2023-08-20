@@ -8,6 +8,8 @@ import wave
 import cmath
 import math
 
+import isPowerOfTwo
+
 SAMPLE_FORMAT = pyaudio.paInt16  # Sound depth = 16 bits = 2 bytes
 
 def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must contain the path and file name of the record. FILENAME must end in ".wav"
@@ -46,7 +48,7 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
         RATE = 44100
         print(f'The sampling rate is set incorrectly. The default value is set:\n\t RATE = {RATE}')
 
-    if type(CHUNK) != int or CHUNK <= 0 or cmath.log(CHUNK, 2).real-float(int(cmath.log(CHUNK, 2).real)) != 0:
+    if type(CHUNK) != int or CHUNK <= 0 or not isPowerOfTwo.isPowerOfTwo(CHUNK):
         CHUNK = 1024
         print(f'The number of frames per one "request" to the microphone is set incorrectly. The default value is set:\n\t CHUNK = {CHUNK}')
 
@@ -56,7 +58,7 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
 
     # Checking if the volume of recorded data matches a power of two. (If it doesn't match, it can be corrected by changing the recording duration.)
     len_data_signal = int(RATE / CHUNK * SECONDS)*CHUNK # It is possible to use only 'int(RATE / CHUNK * SECONDS)' since CHUNK is a power of two
-    if cmath.log(len_data_signal, 2).real-float(int(cmath.log(len_data_signal, 2).real)) != 0:
+    if not isPowerOfTwo.isPowerOfTwo(len_data_signal):
         print(f'The recorded data volume will not match a power of two (the "fft" function will not be usable).')
         while True:
             try:

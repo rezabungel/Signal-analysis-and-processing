@@ -12,6 +12,7 @@ import cmath
 import time # Used to calculate the time spent on FFT
 
 import building_a_fourier_transform_graph
+import isPowerOfTwo
 
 types = {
     1: np.int8,
@@ -27,8 +28,16 @@ def fft(data_signal):
         data_signal ("numpy.ndarray" with dtype=Depends_on_SAMPLE_FORMAT) - signal data. (note: the amount of data should be a power of two)
     The result of the function:
         Return values:
-            FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform.
+            FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform
+            or
+            -1 ("int") - if the amount of data is not a power of two.
     '''
+
+    # Checking that the amount of data corresponds to a power of two.
+    if not isPowerOfTwo.isPowerOfTwo(len(data_signal)):
+        print(f'The amount of data does not correspond to a power of two (the "fft" function cannot be used).')
+        print(f"The function terminates with a return of -1.")
+        return -1
 
     n = len(data_signal) # n is a power of 2
     if n == 1:
@@ -53,7 +62,9 @@ def fast_fourier_transform(path_to_signal="../data/input_signal.wav", need_to_pl
         Return values:
             FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform (from 0 to the Nyquist frequency);
             amplitude ("numpy.ndarray" with dtype="numpy.float64") - signal amplitude;
-            frequency ("numpy.ndarray" with dtype="numpy.float64") - signal frequency in hertz.
+            frequency ("numpy.ndarray" with dtype="numpy.float64") - signal frequency in hertz;
+            or
+            -1 ("int") - if the amount of data is not a power of two.
         Discrete Fourier transform graph (if "need_to_plot" = True):
             Please refer to the result of the "building_a_fourier_transform_graph" function implemented in the "building_a_fourier_transform_graph.py" file.
     '''
@@ -75,12 +86,6 @@ def fast_fourier_transform(path_to_signal="../data/input_signal.wav", need_to_pl
         N_FRAMES = wf.getnframes() # The number of frames
         data_signal = np.frombuffer(wf.readframes(N_FRAMES), dtype=types[SAMPLE_FORMAT]) # Reading the signal from the file and converting bytes to int
 
-    # Checking that the amount of data corresponds to a power of two.
-    if cmath.log(len(data_signal), 2).real-float(int(cmath.log(len(data_signal), 2).real)) != 0:
-        print(f'The amount of data does not correspond to a power of two (the "fft" function cannot be used).')
-        print(f"The function terminates with a return of -1.")
-        return -1
-
     # One of the properties of the discrete Fourier transform: symmetry with respect to the Nyquist frequency (the rule applies to a real signal).
     # We will consider the Fourier transform from 0 to the Nyquist frequency, and not from 0 to the Sampling frequency.
     # To get the Fourier transform from 0 to the Sampling frequency, you need to mirror image the complex conjugate numbers from the Fourier transform starting from the first element to the penultimate element.
@@ -96,6 +101,10 @@ def fast_fourier_transform(path_to_signal="../data/input_signal.wav", need_to_pl
     start_time = time.time() # Starting the stopwatch
 
     FT = fft(data_signal)
+
+    if type(FT) == int:
+        return -1
+
     FT = FT[:index_Nyquist_frequency]
 
     end_time = time.time() - start_time # Stopping the stopwatch

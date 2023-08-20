@@ -10,6 +10,8 @@ import cmath
 
 import time # Used to calculate the time spent on iFFT
 
+import isPowerOfTwo
+
 types = {
     1: np.int8,
     2: np.int16,
@@ -24,7 +26,9 @@ def ifft(FT):
         FT ("numpy.ndarray" with dtype="numpy.complex128") - values of the discrete Fourier transform (note: The amount of data must be a power of two.).
     The result of the function:
         Return values:
-            iFT ("numpy.ndarray" with dtype="numpy.complex128") - values of the inverse discrete Fourier transform.
+            iFT ("numpy.ndarray" with dtype="numpy.complex128") - values of the inverse discrete Fourier transform
+            or
+            -1 ("int") - if the amount of data is not a power of two.
     '''
 
     def iFFT(FT):
@@ -39,7 +43,13 @@ def ifft(FT):
             iFT[i] = y_even[i]+(omega**i)*y_odd[i]
             iFT[i+int(n/2)] = y_even[i]-(omega**i)*y_odd[i]
         return iFT
-    
+
+    # Checking that the amount of data corresponds to a power of two.
+    if not isPowerOfTwo.isPowerOfTwo(len(FT)):
+        print(f'The amount of data does not correspond to a power of two (the "ifft" function cannot be used).')
+        print(f"The function terminates with a return of -1.")
+        return -1
+
     iFT = iFFT(FT)
     iFT = iFT * (1/len(iFT))
     return iFT
@@ -73,7 +83,11 @@ def inverse_fast_fourier_transform(FT, mirror_image=False):
     The result of the function:
         Return values:
             iFT ("numpy.ndarray" with dtype="numpy.complex128") - values of the inverse discrete Fourier transform;
-            data_signal ("numpy.ndarray" with dtype="numpy.int32") - value of the signal data.
+            data_signal ("numpy.ndarray" with dtype="numpy.int32") - value of the signal data
+            or
+            -1 ("int") - if the amount of data is not a power of two
+            or
+            -2 ("int") - if an error occurs in the values of the discrete Fourier transform, incorrect data is provided, instead of the expected "numpy.ndarray" with dtype="numpy.complex128".
     '''
 
     # Checking for the correctness of the input data
@@ -89,17 +103,14 @@ def inverse_fast_fourier_transform(FT, mirror_image=False):
     if mirror_image == True:
         FT = mirror(FT)
 
-    # Checking that the amount of data corresponds to a power of two.
-    if cmath.log(len(FT), 2).real-float(int(cmath.log(len(FT), 2).real)) != 0:
-        print(f'The amount of data does not correspond to a power of two (the "ifft" function cannot be used).')
-        print(f"The function terminates with a return of -1.")
-        return -1
-
     print(f"The beginning of the calculation of the inverse fast Fourier transform.")
     print(f"iFFT progress...")
     start_time = time.time() # Starting the stopwatch
 
     iFT = ifft(FT)
+
+    if type(iFT) == int:
+        return -1
 
     end_time = time.time() - start_time # Stopping the stopwatch
     print(f"The end of the calculation of the inverse fast Fourier transform. Time spent {'%.3f' % end_time} seconds.\n")
