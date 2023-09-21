@@ -57,47 +57,7 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
         print(f'The number of channels is set incorrectly. The default value is set:\n\t CHANNELS = {CHANNELS}')
 
     # Checking if the volume of recorded data matches a power of two. (If it doesn't match, it can be corrected by changing the recording duration.)
-    len_data_signal = int(RATE / CHUNK * SECONDS)*CHUNK # It is possible to use only 'int(RATE / CHUNK * SECONDS)' since CHUNK is a power of two
-    if not isPowerOfTwo.isPowerOfTwo(len_data_signal):
-        print(f'The recorded data volume will not match a power of two (the "fft" function will not be usable).')
-        while True:
-            try:
-                while True:
-                    answer = int(input('To use the "fft" function, you will have to change the recording duration. Do you want to do this (1/0)?\t'))
-                    if answer == 0 or answer == 1:
-                        break
-                    else:
-                        print(f"Invalid input. Non-existent answer.")
-                break
-            except ValueError:
-                print(f"Invalid input. You didn't enter a number.")
-
-        if answer == 1:
-            temp = cmath.log(int(RATE / CHUNK * SECONDS), 2).real
-            hint = [.0, .0]
-            
-            hint[0] = (2**float(int(temp))) / (RATE / CHUNK)
-            hint[1] = (2**float(int(temp+1))) / (RATE / CHUNK)
-
-            hint[0] = math.ceil(hint[0]*100)/100
-            hint[1] = math.ceil(hint[1]*100)/100
-
-            while True:
-                try:
-                    while True:
-                        answer = int(input(f'Choose the recording duration: \n0: {hint[0]} \n1: {hint[1]} \nAnswer... '))
-                        if answer == 0 or answer == 1:
-                            break
-                        else:
-                            print(f"Invalid input. Non-existent answer.")
-                    break
-                except ValueError:
-                    print(f"Invalid input. You didn't enter a number.")
-
-            SECONDS = hint[answer]
-            print(f'Now the recorded data volume will correspond to a power of two (the "fft" function will be usable).')
-    else:
-        print(f'The recorded data volume will correspond to a power of two (the "fft" function will be usable).')
+    SECONDS = isPowerOfTwo.isPowerOfTwo_DataVolume(SECONDS, RATE, CHUNK)
 
     audio = pyaudio.PyAudio() # Initialize PyAudio object
 
