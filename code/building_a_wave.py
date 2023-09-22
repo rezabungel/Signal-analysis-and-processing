@@ -58,12 +58,37 @@ def building_a_wave(path_to_signal = "../data/input_signal.wav"):
     name_signal_graph = " ".join(name_signal_graph)
 
     # Plotting the signal graph
-    plt.subplots()
-    plt.plot(time, data_signal)
-    plt.title(name_signal_graph)
-    plt.xlabel('Time')
-    plt.ylabel('Amplitude')
-    plt.grid(alpha=0.1)
+    index = np.where(time <= 0.10001)[0][-1]
+
+    if time[index] <= 0.1:
+        # If the recording duration is less than or equal to 0.1 seconds, only one graph will be plotted, representing the entire signal.
+        fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(14, 8))
+        axes.plot(time, data_signal)
+        axes.set_title(name_signal_graph, fontsize=10)
+        axes.set_xlabel('Time', fontsize=10)
+        axes.set_ylabel('Amplitude', fontsize=10)
+        axes.grid(alpha=0.1)
+    else:
+        # If the recording duration is greater than 0.1 seconds, two graphs will be plotted. 
+        #   The first graph will represent the entire signal, and the second graph will represent this signal in the range from 0.0 to 0.1 seconds.
+        #   A graph in the range from 0.0 to 0.1 seconds is very convenient for generated signals.
+        fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(14, 8))
+
+        axes[0].plot(time, data_signal)
+        axes[0].set_title(name_signal_graph, fontsize=10)
+        axes[0].set_xlabel('Time', fontsize=10)
+        axes[0].set_ylabel('Amplitude', fontsize=10)
+        axes[0].grid(alpha=0.1)
+
+        name_signal_graph += ' (in the range from 0.0 to 0.1)'
+
+        axes[1].plot(time[:index], data_signal[:index])
+        axes[1].set_title(name_signal_graph, fontsize=10)
+        axes[1].set_xlabel('Time', fontsize=10)
+        axes[1].set_ylabel('Amplitude', fontsize=10)
+        axes[1].grid(alpha=0.1)
+        
+    plt.subplots_adjust(hspace = 0.3)
     plt.savefig(path_to_save_signal_graph)
     plt.show()
 
