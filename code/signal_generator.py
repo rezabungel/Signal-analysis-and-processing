@@ -1,5 +1,6 @@
 '''
-This module is used to ...
+This module is used for generating signals and recording them into a file with a ".wav" extension.
+Generation is done through combinations of sinusoids with specified frequencies.
 '''
 
 import pyaudio
@@ -12,15 +13,32 @@ import isPowerOfTwo
 
 SAMPLE_FORMAT = pyaudio.paInt16 # Sound depth = 16 bits = 2 bytes
 
-def signal_generator(FILENAME = "../data/generated_signal.wav", SECONDS = 5.0, RATE = 44100, FREQUENCIES = None):
-    
+def note(frequency): # y = sin(2*math.pi*frequency*x)
+
     '''
-    This function allows you to ...
+    This function is used to define a sine wave of the form sin(2*pi*frequency*x).
+    The following parameters are passed to the function:
+        frequency ("int" or "float") - the frequency of the sine wave.
+    The result of the function:
+        Return values:
+            The lambda function is math.sin(2*math.pi*frequency*x), where the lambda function takes a parameter x.
+    
+    For example, when 440 Hz is passed, it returns a lambda function representing the musical note A.
     '''
 
-    # A function is created to return a lambda function of a signal (for example, when 440Hz is passed, it returns a function the musical note A).
-    def note(hertz): # y = sin(2*math.pi*hertz*x)
-        return lambda x: math.sin(2*math.pi*hertz*x) 
+    return lambda x: math.sin(2*math.pi*frequency*x) 
+
+def signal_generator(FILENAME = "../data/generated_signal.wav", SECONDS = 5.0, RATE = 44100, FREQUENCIES = None):
+
+    '''
+    This function allows you to generate a signal composed of a sum of sinusoids with specified frequencies and save it to a file.
+    The following parameters are passed to the function:
+        FILENAME ("str") - path to save the file and its name with ".wav" extension. (example: "../the_path_to_save_the_file/name_of_the_saved_file.wav");
+        SECONDS ("float" and greater than 0) - recording duration of the generated signal in seconds (note: The "int" type is supported, it will be cast to the "float" type.);
+        RATE ("int" and greater than 0) - sampling rate in hertz (note: 44100 hertz is the standard CD quality.);
+        FREQUENCIES ("list" or "tuple" with elements of "int" or "float" (may use a combination of "int" and "float")) - collection of frequencies that will be used for generating sine waves of the form sin(2*pi*frequency*x).
+    The result of the function will be a recorded generated signal (where the generated signal is the sum of sinusoids with different frequencies, i.e., sin(...) + sin(...) + ...) and saved in accordance with the passed parameters.
+    '''
 
     print(f"Signal generation from the given frequencies has started.")
 
@@ -46,7 +64,7 @@ def signal_generator(FILENAME = "../data/generated_signal.wav", SECONDS = 5.0, R
         if len(FREQUENCIES) == 0:
             FREQUENCIES = (440, 556, 659)
             print(f'The frequencies are set incorrectly. The number of elements in frequencies should be greater than 0. The default value is set:\n\t FREQUENCIES = {FREQUENCIES}')
-        elif not all(True if type(hertz) == int or type(hertz) == float else False for hertz in FREQUENCIES):
+        elif not all(True if type(frequency) == int or type(frequency) == float else False for frequency in FREQUENCIES):
             FREQUENCIES = (440, 556, 659)
             print(f'The frequencies are set incorrectly. The elements in the collection can be either int or float, or a mix of both. The default value is set:\n\t FREQUENCIES = {FREQUENCIES}')
     else:
@@ -62,8 +80,8 @@ def signal_generator(FILENAME = "../data/generated_signal.wav", SECONDS = 5.0, R
     time = np.linspace(0, SECONDS, int(RATE / CHUNK * SECONDS)*CHUNK)
     data_signal = np.zeros(shape=time.size)
 
-    for hertz in FREQUENCIES:
-        musical_note = note(hertz)
+    for frequency in FREQUENCIES:
+        musical_note = note(frequency)
         data_signal += np.array([musical_note(t) for t in time])
 
     # Normalize the signal data
