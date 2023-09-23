@@ -1,5 +1,6 @@
 import signal_recording
 import signal_playback
+import signal_generator
 import building_a_wave
 import creating_a_signal
 import fourier_transform # Does not require data of degree two
@@ -129,10 +130,32 @@ def example4():
 def example5():
 
     '''
-    Example 5
+    Example 5: The fast direct and fast inverse Fourier transform algorithms are used for the generated signal (sum of sinusoids with specified frequencies).
+    note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.
+	    The matching will be done by adjusting the duration of the recording. The function "signal_generator" will suggest doing this if necessary.
+    note: The signal will be generated from the sum of sinusoids with specified frequencies, its graph will be plotted,
+	    the fast direct discrete Fourier transform will be applied with a graph of the result,
+	    then the inverse fast discrete Fourier transform will be applied,
+	    the signal will be reconstructed from the obtained data,
+	    its graph will be plotted, and finally, it will be reproduced through the speakers.
+    note: The graphs of the "input" and "output" signals will coincide.
     '''
 
-    pass
+    filename_input = "../data/input_generated_signal5.wav"
+    filename_output = "../data/output_generated_signal5.wav"
+    rate_high = 44100
+    frequencies = [200, 350, 400, 550, 700, 850, 1000]
+
+    signal_generator.signal_generator(FILENAME=filename_input, SECONDS=3, RATE=rate_high, FREQUENCIES=frequencies)
+    building_a_wave.building_a_wave(path_to_signal=filename_input)
+
+    FT, amplitude, frequency = fast_fourier_transform.fast_fourier_transform(path_to_signal=filename_input, need_to_plot=True)
+
+    iFT, data_signal = inverse_fast_fourier_transform.inverse_fast_fourier_transform(FT=FT, mirror_image=True)
+
+    creating_a_signal.creating_a_signal(data_signal=data_signal, FILENAME=filename_output, RATE=rate_high, CHANNELS=1)
+    building_a_wave.building_a_wave(path_to_signal=filename_output)
+    signal_playback.signal_playback(FILENAME=filename_output)
 
 def choose_example():
     print(f"\n\n\n********************************************************************************")
@@ -141,7 +164,7 @@ def choose_example():
     print(f"\t2 -> Example 2: The direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula with computation parallelized across 8 cores.")
     print(f"\t3 -> Example 3: The fast direct and fast inverse discrete Fourier transform algorithms are used.")
     print(f"\t4 -> Example 4: The fast direct and fast inverse discrete Fourier transform algorithms are used for a signal with a frequency of 440 Hz.")
-    print(f"\t5 -> Example 5: ")
+    print(f"\t5 -> Example 5: The fast direct and fast inverse Fourier transform algorithms are used for the generated signal (sum of sinusoids with specified frequencies).")
     print(f"\t0 -> All examples.")
     print(f"\t-1 -> Help.")
     print(f"\t-10 -> Exit.")
@@ -162,78 +185,11 @@ def choose_example():
     return answer
 
 def help():
-    print(f"\n\n\n********************************************************************************")
-    print(f"Example 1: The direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula.")
-    print(f"note: A signal will be recorded from a microphone, its graph will be plotted,")
-    print(f"\tthe direct discrete Fourier transform will be applied with a graph of the result,")
-    print(f"\tthen the inverse discrete Fourier transform will be applied,")
-    print(f"\tthe signal will be reconstructed from the obtained data,")
-    print(f"\tits graph will be plotted, and finally, it will be reproduced through the speakers.")
-    print(f"note: The graphs of the \"input\" and \"output\" signals will coincide.")
-    print(f"Variables:")
-    print(f"\tfilename_input = \"../data/input_signal.wav\"")
-    print(f"\tfilename_output = \"../data/output_signal.wav\"")
-    print(f"\tSECONDS = 3.0")
-    print(f"\tRATE = 4000")
-    print(f"\tCHUNK = 1024")
-    print(f"\tCHANNELS = 1")
-    print(f"\tneed_to_plot = True")
-    print(f"\tmirror_image = True")
-    print(f"--------------------------------------------------------------------------------")
-    print(f"Example 2: The direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula with computation parallelized across 8 cores.")
-    print(f"note: A signal will be recorded from a microphone, its graph will be plotted,")
-    print(f"\tthe direct discrete Fourier transform (computation parallelized across 8 cores) will be applied with a graph of the result,")
-    print(f"\tthen the inverse discrete Fourier transform (computation parallelized across 8 cores) will be applied,")
-    print(f"\tthe signal will be reconstructed from the obtained data,")
-    print(f"\tits graph will be plotted, and finally, it will be reproduced through the speakers.")
-    print(f"note: The graphs of the \"input\" and \"output\" signals will coincide.")
-    print(f"Variables:")
-    print(f"\tfilename_input = \"../data/input_signal2.wav\"")
-    print(f"\tfilename_output = \"../data/output_signal2.wav\"")
-    print(f"\tSECONDS = 3.0")
-    print(f"\tRATE = 9000")
-    print(f"\tCHUNK = 1024")
-    print(f"\tCHANNELS = 1")
-    print(f"\tneed_to_plot = True")
-    print(f"\tmirror_image = True")
-    print(f"--------------------------------------------------------------------------------")
-    print(f"Example 3: The fast direct and fast inverse discrete Fourier transform algorithms are used.")
-    print(f"note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.")
-    print(f"\tThe matching will be done by adjusting the duration of the recording. The function \"signal_recording\" will suggest doing this if necessary.")
-    print(f"note: A signal will be recorded from a microphone, its graph will be plotted,")
-    print(f"\tthe fast direct discrete Fourier transform will be applied with a graph of the result,")
-    print(f"\tthen the inverse fast discrete Fourier transform will be applied,")
-    print(f"\tthe signal will be reconstructed from the obtained data,")
-    print(f"\tits graph will be plotted, and finally, it will be reproduced through the speakers.")
-    print(f"note: The graphs of the \"input\" and \"output\" signals will coincide.")
-    print(f"Variables:")
-    print(f"\tfilename_input = \"../data/input_signal3.wav\"")
-    print(f"\tfilename_output = \"../data/output_signal3.wav\"")
-    print(f"\tSECONDS = 10 (note: In this example, FFT and IFFT algorithms are used. Please agree to change the recording duration if needed.)")
-    print(f"\tRATE = 44100")
-    print(f"\tCHUNK = 1024")
-    print(f"\tCHANNELS = 1")
-    print(f"\tneed_to_plot = True")
-    print(f"\tmirror_image = True")
-    print(f"--------------------------------------------------------------------------------")
-    print(f"Example 4: The fast direct and fast inverse discrete Fourier transform algorithms are used for a signal with a frequency of 440 Hz.")
-    print(f"note: It assumes the existence of a file with a frequency of 440 Hz, and the volume of its data allows for the application of fast algorithms.")
-    print(f"\tOne of such files exists in the \"examples\" folder located within the \"data\" directory.")
-    print(f"note: A signal of 440 Hz with a duration of 11 seconds and 89 milliseconds will be played, its graph will be plotted,")
-    print(f"\tthe fast direct discrete Fourier transform will be applied with a graph of the result,")
-    print(f"\tthen the inverse fast discrete Fourier transform will be applied,")
-    print(f"\tthe signal will be reconstructed from the obtained data,")
-    print(f"\tits graph will be plotted, and finally, it will be reproduced through the speakers.")
-    print(f"note: The graphs of the \"input\" and \"output\" signals will coincide.")
-    print(f"Variables:")
-    print(f"\tfilename_input = \"../data/examples/signal_440hz_duration_11s-89ms.wav\"")
-    print(f"\tfilename_output = \"../data/reconstructed_signal_440hz_duration_11s-89ms.wav\"")
-    print(f"\tRATE = 11025")
-    print(f"\tCHANNELS = 1")
-    print(f"\tneed_to_plot = True")
-    print(f"\tmirror_image = True")
-    print(f"--------------------------------------------------------------------------------")
-    print(f"********************************************************************************\n\n\n")
+    try:
+        with open('../data/source/help.txt', 'r', encoding='utf-8') as f:
+            print(*f)
+    except FileNotFoundError:
+        print(f'The file "help.txt", which contains information about the examples, was not found in "/data/source/".')
 
 def main():
     print(f"Signal analysis and processing.")
