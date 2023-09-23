@@ -1,6 +1,6 @@
 '''
 This module is used for plotting the graph of discrete Fourier transform.
-The data for plotting the graph is passed from the functions "fourier_transform" or "fourier_transform_in_parallel", so they don't need to be validated for correctness.
+The data for plotting the graph is passed from the functions "fourier_transform", "fourier_transform_in_parallel" or "fast_fourier_transform", so they don't need to be validated for correctness.
 The discrete Fourier transform graph will be displayed on the screen and saved to a file with the extension ".png".
 '''
 
@@ -30,12 +30,39 @@ def building_a_fourier_transform_graph(frequency, amplitude, path_to_signal="../
     name_fourier_transform_graph = " ".join(name_fourier_transform_graph)
 
     # Plotting the discrete Fourier transform graph
-    plt.subplots()
-    plt.stem(frequency, amplitude)
-    plt.title(name_fourier_transform_graph)
-    plt.xlabel('Frequency')
-    plt.ylabel('Amplitude')
-    plt.grid(alpha=0.1)
+    if max(frequency) <= 3000.0:
+        # If the maximum frequency is less than or equal to 3000.0 Hertz, only one graph of the discrete Fourier transform will be plotted.
+        fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(14, 8))
+        axes.stem(frequency, amplitude)
+        axes.set_title(name_fourier_transform_graph, fontsize=10)
+        axes.set_xlabel('Frequency', fontsize=10)
+        axes.set_ylabel('Amplitude', fontsize=10)
+        axes.grid(alpha=0.1)
+    else:
+        # If the maximum frequency is greater than 3000.0 Hertz, two discrete Fourier transform graphs will be plotted.
+        #   The first graph will represent the entire frequency range, and the second graph will represent the frequency range from 0.0 to 3000.0 Hertz.
+        #   The graph in the range from 0.0 to 3000.0 Hertz is very convenient for analyzing generated signals.
+        #   Note: in fact, the range will not be exactly up to 3000.0 hertz, but close to it
+        fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(14, 8))
+
+        axes[0].stem(frequency, amplitude)
+        axes[0].set_title(name_fourier_transform_graph, fontsize=10)
+        axes[0].set_xlabel('Frequency', fontsize=10)
+        axes[0].set_ylabel('Amplitude', fontsize=10)
+        axes[0].grid(alpha=0.1)
+
+        name_fourier_transform_graph += ' (in the range from 0 to 3000)'
+        frequency = frequency[frequency<3000.00001]
+
+        axes[1].stem(frequency, amplitude[:len(frequency)])
+        axes[1].set_title(name_fourier_transform_graph, fontsize=10)
+        axes[1].set_xlabel('Frequency', fontsize=10)
+        axes[1].set_ylabel('Amplitude', fontsize=10)
+        axes[1].set_xticks(np.arange(0, 3000.1, 100))
+        axes[1].tick_params(axis='x', labelsize=8)
+        axes[1].grid(alpha=0.1)
+
+    plt.subplots_adjust(hspace = 0.3)
     plt.savefig(path_to_save_fourier_transform_graph)
     plt.show()
 
