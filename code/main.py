@@ -12,16 +12,23 @@ import inverse_fast_fourier_transform # Requires data of degree two
 import matplotlib.pyplot as plt
 import multiprocessing
 
-def main():
+def example1():
 
-    # example 1
-    # In this example, the direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula.
+    '''
+    Example 1: The direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula.
+    note: A signal will be recorded from a microphone, its graph will be plotted,
+	    the direct discrete Fourier transform will be applied with a graph of the result,
+	    then the inverse discrete Fourier transform will be applied,
+	    the signal will be reconstructed from the obtained data,
+	    its graph will be plotted, and finally, it will be reproduced through the speakers.
+    note: The graphs of the "input" and "output" signals will coincide.
+    '''
 
     filename_input = "../data/input_signal.wav"
     filename_output = "../data/output_signal.wav"
     rate_low = 4000
 
-    signal_recording.signal_recording(FILENAME=filename_input, SECONDS=5.0, RATE=rate_low, CHUNK=1024, CHANNELS=1)
+    signal_recording.signal_recording(FILENAME=filename_input, SECONDS=3.0, RATE=rate_low, CHUNK=1024, CHANNELS=1)
     building_a_wave.building_a_wave(path_to_signal=filename_input)
 
     FT, amplitude, frequency = fourier_transform.fourier_transform(path_to_signal=filename_input, need_to_plot=True)
@@ -32,20 +39,23 @@ def main():
     building_a_wave.building_a_wave(path_to_signal=filename_output)
     signal_playback.signal_playback(FILENAME=filename_output)
 
-    # note: A signal was recorded, its graph was plotted, the direct discrete Fourier transform
-            # was applied with a graph of the result, then the inverse discrete Fourier transform
-            # was applied, the signal was reconstructed from the obtained data, its graph was
-            # plotted, and finally, it was reproduced through the speakers.
-    # note: The graphs of the "input" and "output" signals will coincide.
+def example2():
 
-    # example 2
-    # In this example, the direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula with computation parallelized across 8 cores.
+    '''
+    Example 2: The direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula with computation parallelized across 8 cores.
+    note: A signal will be recorded from a microphone, its graph will be plotted,
+	    the direct discrete Fourier transform (computation parallelized across 8 cores) will be applied with a graph of the result,
+	    then the inverse discrete Fourier transform (computation parallelized across 8 cores) will be applied,
+	    the signal will be reconstructed from the obtained data,
+	    its graph will be plotted, and finally, it will be reproduced through the speakers.
+    note: The graphs of the "input" and "output" signals will coincide.
+    '''
 
     filename_input = "../data/input_signal2.wav"
     filename_output = "../data/output_signal2.wav"
     rate_mid = 9000
 
-    signal_recording.signal_recording(FILENAME=filename_input, SECONDS=5.0, RATE=rate_mid, CHUNK=1024, CHANNELS=1)
+    signal_recording.signal_recording(FILENAME=filename_input, SECONDS=3.0, RATE=rate_mid, CHUNK=1024, CHANNELS=1)
     building_a_wave.building_a_wave(path_to_signal=filename_input)
 
     FT, amplitude, frequency = fourier_transform_in_parallel.fourier_transform_in_parallel(path_to_signal=filename_input, need_to_plot=True)
@@ -56,16 +66,19 @@ def main():
     building_a_wave.building_a_wave(path_to_signal=filename_output)
     signal_playback.signal_playback(FILENAME=filename_output)
 
-    # note: A signal was recorded, its graph was plotted, the direct discrete Fourier transform
-            # was applied with a graph of the result, then the inverse discrete Fourier transform
-            # was applied, the signal was reconstructed from the obtained data, its graph was
-            # plotted, and finally, it was reproduced through the speakers.
-    # note: The graphs of the "input" and "output" signals will coincide.
+def example3():
 
-    # example 3
-    # In this example, the fast direct and inverse discrete Fourier transform algorithms are used.
-    # note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.
-            # The matching is done by adjusting the duration of the recording. The function "signal_recording" will suggest doing this if necessary.
+    '''
+    Example 3: The fast direct and fast inverse discrete Fourier transform algorithms are used.
+    note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.
+	    The matching will be done by adjusting the duration of the recording. The function "signal_recording" will suggest doing this if necessary.
+    note: A signal will be recorded from a microphone, its graph will be plotted,
+	    the fast direct discrete Fourier transform will be applied with a graph of the result,
+	    then the inverse fast discrete Fourier transform will be applied,
+	    the signal will be reconstructed from the obtained data,
+	    its graph will be plotted, and finally, it will be reproduced through the speakers.
+    note: The graphs of the "input" and "output" signals will coincide.
+    '''
 
     filename_input = "../data/input_signal3.wav"
     filename_output = "../data/output_signal3.wav"
@@ -82,16 +95,19 @@ def main():
     building_a_wave.building_a_wave(path_to_signal=filename_output)
     signal_playback.signal_playback(FILENAME=filename_output)
 
-    # note: A signal was recorded, its graph was plotted, the direct discrete Fourier transform
-            # was applied with a graph of the result, then the inverse discrete Fourier transform
-            # was applied, the signal was reconstructed from the obtained data, its graph was
-            # plotted, and finally, it was reproduced through the speakers.
-    # note: The graphs of the "input" and "output" signals will coincide.
+def example4():
 
-    # example 4
-    # In this example, the fast direct and inverse discrete Fourier transform algorithms are used for a signal with a frequency of 440 Hz.
-    # note: It assumes the existence of a file with a frequency of 440 Hz, and the volume of its data allows for the application of fast algorithms.
-            # One of such files exists in the "examples" folder located within the "data" directory.
+    '''
+    Example 4: The fast direct and fast inverse discrete Fourier transform algorithms are used for a signal with a frequency of 440 Hz.
+    note: It assumes the existence of a file with a frequency of 440 Hz, and the volume of its data allows for the application of fast algorithms.
+    	One of such files exists in the "examples" folder located within the "data" directory.
+    note: A signal of 440 Hz with a duration of 11 seconds and 89 milliseconds will be played, its graph will be plotted,
+    	the fast direct discrete Fourier transform will be applied with a graph of the result,
+    	then the inverse fast discrete Fourier transform will be applied,
+    	the signal will be reconstructed from the obtained data,
+    	its graph will be plotted, and finally, it will be reproduced through the speakers.
+    note: The graphs of the "input" and "output" signals will coincide.
+    '''
 
     filename_input = "../data/examples/signal_440hz_duration_11s-89ms.wav"
     filename_output = "../data/reconstructed_signal_440hz_duration_11s-89ms.wav"
@@ -110,15 +126,144 @@ def main():
     print(f"The reconstructed signal with a frequency of 440 Hz and a duration of 11 seconds 89 milliseconds will be played.")
     signal_playback.signal_playback(FILENAME=filename_output) 
 
-    # note: A signal of 440 Hz with a duration of 11 seconds 89 milliseconds was played, its graph
-            # was plotted, the direct discrete Fourier transform was applied with a graph of the
-            # result, then the inverse discrete Fourier transform was applied, the signal was
-            # reconstructed from the obtained data, its graph was plotted, and finally, it was
-            # reproduced through the speakers.
-    # note: The graphs of the "input" and "output" signals will coincide.
+def example5():
+
+    '''
+    Example 5
+    '''
+
+    pass
+
+def choose_example():
+    print(f"\n\n\n********************************************************************************")
+    print(f"Choose the example you want to use:")
+    print(f"\t1 -> Example 1: The direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula.")
+    print(f"\t2 -> Example 2: The direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula with computation parallelized across 8 cores.")
+    print(f"\t3 -> Example 3: The fast direct and fast inverse discrete Fourier transform algorithms are used.")
+    print(f"\t4 -> Example 4: The fast direct and fast inverse discrete Fourier transform algorithms are used for a signal with a frequency of 440 Hz.")
+    print(f"\t5 -> Example 5: ")
+    print(f"\t0 -> All examples.")
+    print(f"\t-1 -> Help.")
+    print(f"\t-10 -> Exit.")
+
+    while True:
+        try:
+            while True:
+                answer = int(input("Your choice?\t"))
+                if answer >= -1 and answer <= 5 or answer == -10:
+                    print(f"********************************************************************************\n\n\n")
+                    break
+                else:
+                    print(f"Invalid input. Non-existent answer.")
+            break
+        except ValueError:
+            print(f"Invalid input. You didn't enter a number.")
+
+    return answer
+
+def help():
+    print(f"\n\n\n********************************************************************************")
+    print(f"Example 1: The direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula.")
+    print(f"note: A signal will be recorded from a microphone, its graph will be plotted,")
+    print(f"\tthe direct discrete Fourier transform will be applied with a graph of the result,")
+    print(f"\tthen the inverse discrete Fourier transform will be applied,")
+    print(f"\tthe signal will be reconstructed from the obtained data,")
+    print(f"\tits graph will be plotted, and finally, it will be reproduced through the speakers.")
+    print(f"note: The graphs of the \"input\" and \"output\" signals will coincide.")
+    print(f"Variables:")
+    print(f"\tfilename_input = \"../data/input_signal.wav\"")
+    print(f"\tfilename_output = \"../data/output_signal.wav\"")
+    print(f"\tSECONDS = 3.0")
+    print(f"\tRATE = 4000")
+    print(f"\tCHUNK = 1024")
+    print(f"\tCHANNELS = 1")
+    print(f"\tneed_to_plot = True")
+    print(f"\tmirror_image = True")
+    print(f"--------------------------------------------------------------------------------")
+    print(f"Example 2: The direct and inverse discrete Fourier transform algorithms are used directly based on the forward formula with computation parallelized across 8 cores.")
+    print(f"note: A signal will be recorded from a microphone, its graph will be plotted,")
+    print(f"\tthe direct discrete Fourier transform (computation parallelized across 8 cores) will be applied with a graph of the result,")
+    print(f"\tthen the inverse discrete Fourier transform (computation parallelized across 8 cores) will be applied,")
+    print(f"\tthe signal will be reconstructed from the obtained data,")
+    print(f"\tits graph will be plotted, and finally, it will be reproduced through the speakers.")
+    print(f"note: The graphs of the \"input\" and \"output\" signals will coincide.")
+    print(f"Variables:")
+    print(f"\tfilename_input = \"../data/input_signal2.wav\"")
+    print(f"\tfilename_output = \"../data/output_signal2.wav\"")
+    print(f"\tSECONDS = 3.0")
+    print(f"\tRATE = 9000")
+    print(f"\tCHUNK = 1024")
+    print(f"\tCHANNELS = 1")
+    print(f"\tneed_to_plot = True")
+    print(f"\tmirror_image = True")
+    print(f"--------------------------------------------------------------------------------")
+    print(f"Example 3: The fast direct and fast inverse discrete Fourier transform algorithms are used.")
+    print(f"note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.")
+    print(f"\tThe matching will be done by adjusting the duration of the recording. The function \"signal_recording\" will suggest doing this if necessary.")
+    print(f"note: A signal will be recorded from a microphone, its graph will be plotted,")
+    print(f"\tthe fast direct discrete Fourier transform will be applied with a graph of the result,")
+    print(f"\tthen the inverse fast discrete Fourier transform will be applied,")
+    print(f"\tthe signal will be reconstructed from the obtained data,")
+    print(f"\tits graph will be plotted, and finally, it will be reproduced through the speakers.")
+    print(f"note: The graphs of the \"input\" and \"output\" signals will coincide.")
+    print(f"Variables:")
+    print(f"\tfilename_input = \"../data/input_signal3.wav\"")
+    print(f"\tfilename_output = \"../data/output_signal3.wav\"")
+    print(f"\tSECONDS = 10 (note: In this example, FFT and IFFT algorithms are used. Please agree to change the recording duration if needed.)")
+    print(f"\tRATE = 44100")
+    print(f"\tCHUNK = 1024")
+    print(f"\tCHANNELS = 1")
+    print(f"\tneed_to_plot = True")
+    print(f"\tmirror_image = True")
+    print(f"--------------------------------------------------------------------------------")
+    print(f"Example 4: The fast direct and fast inverse discrete Fourier transform algorithms are used for a signal with a frequency of 440 Hz.")
+    print(f"note: It assumes the existence of a file with a frequency of 440 Hz, and the volume of its data allows for the application of fast algorithms.")
+    print(f"\tOne of such files exists in the \"examples\" folder located within the \"data\" directory.")
+    print(f"note: A signal of 440 Hz with a duration of 11 seconds and 89 milliseconds will be played, its graph will be plotted,")
+    print(f"\tthe fast direct discrete Fourier transform will be applied with a graph of the result,")
+    print(f"\tthen the inverse fast discrete Fourier transform will be applied,")
+    print(f"\tthe signal will be reconstructed from the obtained data,")
+    print(f"\tits graph will be plotted, and finally, it will be reproduced through the speakers.")
+    print(f"note: The graphs of the \"input\" and \"output\" signals will coincide.")
+    print(f"Variables:")
+    print(f"\tfilename_input = \"../data/examples/signal_440hz_duration_11s-89ms.wav\"")
+    print(f"\tfilename_output = \"../data/reconstructed_signal_440hz_duration_11s-89ms.wav\"")
+    print(f"\tRATE = 11025")
+    print(f"\tCHANNELS = 1")
+    print(f"\tneed_to_plot = True")
+    print(f"\tmirror_image = True")
+    print(f"--------------------------------------------------------------------------------")
+    print(f"********************************************************************************\n\n\n")
+
+def main():
+    print(f"Signal analysis and processing.")
+
+    while True:
+        answer = choose_example()
+
+        if answer == 1 or answer == 0:
+            example1()
+
+        if answer == 2 or answer == 0:
+            example2()
+
+        if answer == 3 or answer == 0:
+            example3()
+
+        if answer == 4 or answer == 0:
+            example4()
+
+        if answer == 5 or answer == 0:
+            example5()
+
+        if answer == -1:
+            help()
+
+        if answer == -10:
+            break
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()  # Enable support for multiprocessing
     plt.ion()  # Enables interactive mode (The program continues to work after the graph is displayed)
     main()
-    input("End of program, press enter...\t")
+    input("Have a great day! Press enter...\t")
