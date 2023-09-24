@@ -104,6 +104,57 @@ def wave_read(FILENAME):
 
     return data_signal, N_FRAMES, RATE, CHANNELS, SAMPLE_FORMAT
 
+def wave_concatenate(FILENAMES = None, FILENAME_Output = "../data/concatenated_signal.wav"):
+
+    '''
+    This function is used to concatenate wave files into a single file.
+        note: The sample rates, channel counts, and sample formats of the concatenated files must be identical.
+    The following parameters are passed to the function:
+        FILENAMES ("list" or "tuple" with elements of "str") - elements are the paths where the files are stored with their names and the ".wav" extension (example of one of the elements: "../the_path_where_the_file_is_stored/file_name.wav");
+        FILENAME_Output ("str") - path to save the file and its name with ".wav" extension. (example: "../the_path_to_save_the_file/name_of_the_saved_file.wav").
+    The result of the function will be the concatenation of wave files into one, and the concatenated file will be saved.
+        Note: The concatenation order matches the order of elements in FILENAMES.
+    '''
+
+    # Checking for the correctness of the input data
+    if type(FILENAMES) == list or type(FILENAMES) == tuple:   
+        if len(FILENAMES) == 0:
+            raise ValueError(f'The FILENAMES are set incorrectly. The number of elements in FILENAMES should be greater than 0.')
+        
+        if not all(type(file_name) == str for file_name in FILENAMES):
+            raise TypeError(f'The FILENAMES are set incorrectly. The elements in the collection must be of type "str".')
+        
+        if not all('.wav' in file_name for file_name in FILENAMES):
+            raise ValueError(f'The FILENAMES are set incorrectly. The elements of the collection must contain the path to the file, the filename, and its ".wav" extension.')
+
+        FILENAMES = ["./" + file_name for file_name in FILENAMES ]
+    else:
+        raise TypeError(f'The FILENAMES are set incorrectly. FILENAMES is of type {type(FILENAMES)}, but it should be a list or tuple.')
+
+    if type(FILENAME_Output) != str or '.wav' not in FILENAME_Output:
+        FILENAME_Output = "../data/concatenated_signal.wav"
+        print(f'The filename for the concatenated signal is set incorrectly. The default value is set:\n\t FILENAME_Output = "{FILENAME_Output}"')
+    else:
+        FILENAME_Output = "./" + FILENAME_Output
+
+    frames = np.array([], dtype=np.int16)
+    rate = []
+    channels = []
+    sample_format = []
+
+    for file_name in FILENAMES:
+        data_signal, N_FRAMES, RATE, CHANNELS, SAMPLE_FORMAT = wave_read(file_name)
+        
+        frames = np.concatenate([frames, data_signal])
+        rate.append(RATE)
+        channels.append(CHANNELS)
+        sample_format.append(SAMPLE_FORMAT)
+
+    if len(set(rate)) == 1 and len(set(channels)) == 1 and len(set(sample_format)) == 1:
+        wave_write(FILENAME_Output, frames, rate[0], channels[0])
+    else:
+        raise ValueError(f'Invalid audio parameters: different sample rates, channel counts, or sample formats in the concatenated signals.')
+
 if __name__ == "__main__":
     filename = "../data/test.wav"
     data_signal = np.array([5, 31, 14, -4, -8, -14, 15, 54, 57, 45, 16, -17, -49, -82, -71, -53, -27, -8, -37, -91, -122, -130, -126, -114, -102])
@@ -113,3 +164,9 @@ if __name__ == "__main__":
 
     print(f"\nThe data read from the file:")
     print(wave_read(filename))
+
+    filename_out = "../data/test_out.wav"
+    wave_concatenate([filename, filename], filename_out)
+
+    print(f"\nThe data read from the file after their concatenation:")
+    print(wave_read(filename_out))
