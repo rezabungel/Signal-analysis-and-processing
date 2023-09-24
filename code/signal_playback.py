@@ -3,8 +3,9 @@ This module is used to playback the signal.
 Signal from a file with the extension ".wav" is played from your speakers.
 '''
 
-import pyaudio
 import wave
+
+import pyaudio
 
 def signal_playback(FILENAME = "../data/output_signal.wav"): # FILENAME must contain the path and file name of the playback. FILENAME must end in ".wav"
 

@@ -6,13 +6,7 @@ Signal from a file with the extension ".wav" will be displayed on the graph. Thi
 import numpy as np
 import matplotlib.pyplot as plt
 
-import wave
-
-types = {
-    1: np.int8,
-    2: np.int16,
-    4: np.int32
-}
+import wave_worker
 
 def building_a_wave(path_to_signal = "../data/input_signal.wav"):
 
@@ -31,13 +25,7 @@ def building_a_wave(path_to_signal = "../data/input_signal.wav"):
     else:
         path_to_signal = "./" + path_to_signal
 
-    with wave.open(path_to_signal, 'rb') as wf:
-
-        SAMPLE_FORMAT = wf.getsampwidth() # Sound depth
-        CHANNELS = wf.getnchannels() # Number of channels
-        RATE = wf.getframerate() # Sampling rate
-        N_FRAMES = wf.getnframes() # The number of frames
-        data_signal = np.frombuffer(wf.readframes(N_FRAMES), dtype=types[SAMPLE_FORMAT]) # Reading the signal from the file and converting bytes to int
+    data_signal, N_FRAMES, RATE, CHANNELS, SAMPLE_FORMAT = wave_worker.wave_read(path_to_signal)
 
     print(f"Info about signal:")
     print(f"\tSAMPLE_FORMAT = {SAMPLE_FORMAT}")

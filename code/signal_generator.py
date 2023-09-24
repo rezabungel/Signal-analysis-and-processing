@@ -3,15 +3,12 @@ This module is used for generating signals and recording them into a file with a
 Generation is done through combinations of sinusoids with specified frequencies.
 '''
 
-import pyaudio
-import wave
 import math
 
 import numpy as np
 
+import wave_worker
 import isPowerOfTwo
-
-SAMPLE_FORMAT = pyaudio.paInt16 # Sound depth = 16 bits = 2 bytes
 
 def note(frequency): # y = sin(2*math.pi*frequency*x)
 
@@ -73,6 +70,7 @@ def signal_generator(FILENAME = "../data/generated_signal.wav", SECONDS = 5.0, R
         print(f'The default value is set:\n\t FREQUENCIES = {FREQUENCIES}')
 
     CHUNK = 1024 # The number of frames per one "request" to the microphone -> It is used here for the correct operation of the `isPowerOfTwo_DataVolume` function.
+    CHANNELS = 1 # The number of audio tracks -> It is used here for the correct operation of the `wave_write` function.
 
     # Checking if the volume of recorded data matches a power of two. (If it doesn't match, it can be corrected by changing the recording duration.)
     SECONDS = isPowerOfTwo.isPowerOfTwo_DataVolume(SECONDS, RATE, CHUNK)
@@ -94,12 +92,8 @@ def signal_generator(FILENAME = "../data/generated_signal.wav", SECONDS = 5.0, R
     # Converting int to bytes for further writing to the ".wav" file.
     frames = data_signal.tobytes()
 
-    # Creating ".wav" file and writing the signal data, which has been converted to bytes, into it.
-    with wave.open(FILENAME, 'wb') as wf:
-        wf.setnchannels(1) # Set the number of channels (1 = mono sound)
-        wf.setsampwidth(pyaudio.get_sample_size(SAMPLE_FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(frames)
+    # Save the generated data in a WAV file
+    wave_worker.wave_write(FILENAME, frames, RATE, CHANNELS)
 
     print(f'Finished signal generation. The signal is saved in the "{FILENAME}" file!\n')
 

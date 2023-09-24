@@ -3,11 +3,10 @@ This module is used to calculate the inverse discrete Fourier transform and obta
 The inverse discrete Fourier transform is calculated from the data of the discrete Fourier transform. Signal data is the value of the signal in time.
 '''
 
-import numpy as np
-
 import cmath
-
 import time # Used to calculate the time spent on iDFT
+
+import numpy as np
 
 def mirror(FT_need_mirror):
 

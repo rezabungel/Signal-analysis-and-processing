@@ -1,17 +1,18 @@
+import multiprocessing
+
+import matplotlib.pyplot as plt
+
 import signal_recording
 import signal_playback
 import signal_generator
-import building_a_wave
 import creating_a_signal
+import building_a_wave
 import fourier_transform # Does not require data of degree two
 import fourier_transform_in_parallel # Does not require data of degree two
 import fast_fourier_transform # Requires data of degree two
 import inverse_fourier_transform # Does not require data of degree two
 import inverse_fourier_transform_in_parallel # Does not require data of degree two
 import inverse_fast_fourier_transform # Requires data of degree two
-
-import matplotlib.pyplot as plt
-import multiprocessing
 
 def example1():
 

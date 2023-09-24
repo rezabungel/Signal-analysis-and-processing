@@ -4,21 +4,14 @@ The discrete Fourier transform is computed using the fast Fourier transform algo
 The discrete Fourier transform is calculated for a signal stored in a file with the extension ".wav". If necessary, the discrete Fourier transform graph will be displayed on the screen and saved to a file with the extension ".png".
 '''
 
-import numpy as np
-
-import wave
 import cmath
-
 import time # Used to calculate the time spent on FFT
 
-import building_a_fourier_transform_graph
-import isPowerOfTwo
+import numpy as np
 
-types = {
-    1: np.int8,
-    2: np.int16,
-    4: np.int32
-}
+import wave_worker
+import isPowerOfTwo
+import building_a_fourier_transform_graph
 
 def fft(data_signal):
     
@@ -80,11 +73,7 @@ def fast_fourier_transform(path_to_signal="../data/input_signal.wav", need_to_pl
         need_to_plot = False
         print(f'The boolean key value "need_to_plot" is specified incorrectly. The default value is set:\n\t need_to_plot = "{need_to_plot}"')
 
-    with wave.open(path_to_signal, 'rb') as wf:
-        SAMPLE_FORMAT = wf.getsampwidth() # Sound depth
-        RATE = wf.getframerate() # Sampling rate
-        N_FRAMES = wf.getnframes() # The number of frames
-        data_signal = np.frombuffer(wf.readframes(N_FRAMES), dtype=types[SAMPLE_FORMAT]) # Reading the signal from the file and converting bytes to int
+    data_signal, N_FRAMES, RATE, CHANNELS, SAMPLE_FORMAT = wave_worker.wave_read(path_to_signal)
 
     # One of the properties of the discrete Fourier transform: symmetry with respect to the Nyquist frequency (the rule applies to a real signal).
     # We will consider the Fourier transform from 0 to the Nyquist frequency, and not from 0 to the Sampling frequency.

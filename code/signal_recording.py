@@ -4,10 +4,8 @@ The signal is recorded from your microphone and saved to a file with the extensi
 '''
 
 import pyaudio
-import wave
-import cmath
-import math
 
+import wave_worker
 import isPowerOfTwo
 
 SAMPLE_FORMAT = pyaudio.paInt16  # Sound depth = 16 bits = 2 bytes
@@ -100,6 +98,7 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
         data = stream.read(CHUNK) # reading a string of bytes long CHUNK * SAMPLE_FORMAT
         frames.append(data)
 
+    frames = b''.join(frames)
     print(f"Finished recording!\n")
 
     # Stop and close the stream
@@ -108,12 +107,8 @@ def signal_recording(FILENAME = "../data/input_signal.wav", # FILENAME must cont
 
     audio.terminate() # Audio System Close
 
-    # Save the recorded data as a WAV file
-    with wave.open(FILENAME, 'wb') as wf:
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(audio.get_sample_size(SAMPLE_FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(frames))
+    # Save the recorded data in a WAV file
+    wave_worker.wave_write(FILENAME, frames, RATE, CHANNELS)
 
 if __name__ == "__main__":
     signal_recording()

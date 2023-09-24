@@ -4,19 +4,12 @@ The inverse discrete Fourier transform is computed using the inverse fast Fourie
 The inverse discrete Fourier transform is calculated from the data of the discrete Fourier transform. Signal data is the value of the signal in time.
 '''
 
-import numpy as np
-
 import cmath
-
 import time # Used to calculate the time spent on iFFT
 
-import isPowerOfTwo
+import numpy as np
 
-types = {
-    1: np.int8,
-    2: np.int16,
-    4: np.int32
-}
+import isPowerOfTwo
 
 def ifft(FT):
     

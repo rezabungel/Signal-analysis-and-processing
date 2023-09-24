@@ -4,13 +4,11 @@ The calculation of the inverse discrete Fourier transform is parallelized into 8
 The inverse discrete Fourier transform is calculated from the data of the discrete Fourier transform. Signal data is the value of the signal in time.
 '''
 
-import numpy as np
-
 import multiprocessing
-
 import cmath
-
 import time # Used to calculate the time spent on iDFT
+
+import numpy as np
 
 def iDFT(index_start, index_stop, N_FRAMES, FT):
 
