@@ -147,7 +147,7 @@ def example5():
     rate_high = 44100
     frequencies = [200, 350, 400, 550, 700, 850, 1000]
 
-    signal_generator.signal_generator(FILENAME=filename_input, SECONDS=3, RATE=rate_high, FREQUENCIES=frequencies)
+    signal_generator.signal_generator_sum(FILENAME=filename_input, SECONDS=3, RATE=rate_high, FREQUENCIES=frequencies)
     building_a_wave.building_a_wave(path_to_signal=filename_input)
 
     FT, amplitude, frequency = fast_fourier_transform.fast_fourier_transform(path_to_signal=filename_input, need_to_plot=True)
