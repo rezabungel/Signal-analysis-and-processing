@@ -141,7 +141,7 @@ def example5():
     '''
     Example 5: The fast direct and fast inverse Fourier transform algorithms are used for the generated signal (sum of sinusoids with specified frequencies).
     note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.
-	    The matching will be done by adjusting the duration of the recording. The function "signal_generator" will suggest doing this if necessary.
+	    The matching will be done by adjusting the duration of the recording. The function "signal_generator_sum" will suggest doing this if necessary.
     note: The signal will be generated from the sum of sinusoids with specified frequencies, its graph will be plotted,
 	    the fast direct discrete Fourier transform will be applied with a graph of the result,
 	    then the inverse fast discrete Fourier transform will be applied,
@@ -168,6 +168,76 @@ def example5():
     building_a_wave.building_a_wave(path_to_signal=filename_output)
     signal_playback.signal_playback(FILENAME=filename_output)
 
+def example6():
+
+    '''
+    Example 6: The fast direct and fast inverse Fourier transform algorithms are used for the generated signal (sequence of sinusoids with specified frequencies).
+    note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.
+	    The matching will be done by adjusting the duration of the recording. The function "signal_generator_sequence" will suggest doing this if necessary.
+    note: The signal will be generated from the sequence of sinusoids with specified frequencies, its graph will be plotted,
+	    the fast direct discrete Fourier transform will be applied with a graph of the result,
+	    then the inverse fast discrete Fourier transform will be applied,
+	    the signal will be reconstructed from the obtained data,
+	    its graph will be plotted, and finally, it will be reproduced through the speakers.
+    note: The graphs of the "input" and "output" signals will coincide.
+    '''
+
+    filename_input = "../data/input_generated_signal6.wav"
+    filename_output = "../data/output_generated_signal6.wav"
+    rate_high = 44100
+    frequencies = [200, 350, 400, 550, 700, 850, 1000]
+
+    signal_generator.signal_generator_sequence(FILENAME=filename_input, SECONDS=3, RATE=rate_high, FREQUENCIES=frequencies)
+    building_a_wave.building_a_wave(path_to_signal=filename_input)
+
+    FT, amplitude, frequency = fast_fourier_transform.fast_fourier_transform(path_to_signal=filename_input, need_to_plot=True)
+
+    iFT, data_signal = inverse_fast_fourier_transform.inverse_fast_fourier_transform(FT=FT, mirror_image=True)
+
+    print(f"Signal creation has started.")
+    wave_worker.wave_write(FILENAME=filename_output, FRAMES=data_signal, RATE=rate_high, CHANNELS=1)
+    print(f'Finished signal creation. The signal is saved in the "{filename_output}" file!\n')
+    building_a_wave.building_a_wave(path_to_signal=filename_output)
+    signal_playback.signal_playback(FILENAME=filename_output)
+
+def example7():
+
+    '''
+    Example 7: The fast direct and fast inverse Fourier transform algorithms are used for the concatenated signal.
+    note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.
+	    For this example, the recording parameters are already aligned.
+    note: The signal will be obtained as a result of concatenating two signals: the first one will be generated as the sum of sinusoids,
+        and the second one will be generated as a sequence of sinusoids with the same set of frequencies.
+        A graph of this concatenated signal will be plotted,
+        the fast direct discrete Fourier transform will be applied with a graph of the result.
+        then the inverse fast discrete Fourier transform will be applied,
+        the concatenated signal will be reconstructed from the obtained data,
+        a graph of it will be plotted, and finally, it will be reproduced through the speakers.
+    note: The graphs of the "input" and "output" signals will coincide.
+    '''
+
+    filename_input1 = "../data/input_generated_signal_sum7.wav"
+    filename_input2 = "../data/input_generated_signal_sequence7.wav"
+    filename_signal_concatenate = "../data/concatenated_generated_signal7.wav"
+    filename_output = "../data/output_concatenated_generated_signal7.wav"
+    rate_high = 44100
+    frequencies = [200, 400, 0, 500, 800, 400, 0, 200, 800, 400]
+
+    signal_generator.signal_generator_sum(FILENAME=filename_input1, SECONDS=2.98, RATE=rate_high, FREQUENCIES=frequencies)
+    signal_generator.signal_generator_sequence(FILENAME=filename_input2, SECONDS=2.98, RATE=rate_high, FREQUENCIES=frequencies)
+    wave_worker.wave_concatenate(FILENAMES=[filename_input1, filename_input2], FILENAME_Output=filename_signal_concatenate)
+    building_a_wave.building_a_wave(path_to_signal=filename_signal_concatenate)
+
+    FT, amplitude, frequency = fast_fourier_transform.fast_fourier_transform(path_to_signal=filename_signal_concatenate, need_to_plot=True)
+
+    iFT, data_signal = inverse_fast_fourier_transform.inverse_fast_fourier_transform(FT=FT, mirror_image=True)
+
+    print(f"Signal creation has started.")
+    wave_worker.wave_write(FILENAME=filename_output, FRAMES=data_signal, RATE=rate_high, CHANNELS=1)
+    print(f'Finished signal creation. The signal is saved in the "{filename_output}" file!\n')
+    building_a_wave.building_a_wave(path_to_signal=filename_output)
+    signal_playback.signal_playback(FILENAME=filename_output)
+
 def choose_example():
     print(f"\n\n\n********************************************************************************")
     print(f"Choose the example you want to use:")
@@ -176,6 +246,8 @@ def choose_example():
     print(f"\t3 -> Example 3: The fast direct and fast inverse discrete Fourier transform algorithms are used.")
     print(f"\t4 -> Example 4: The fast direct and fast inverse discrete Fourier transform algorithms are used for a signal with a frequency of 440 Hz.")
     print(f"\t5 -> Example 5: The fast direct and fast inverse Fourier transform algorithms are used for the generated signal (sum of sinusoids with specified frequencies).")
+    print(f"\t6 -> Example 6: The fast direct and fast inverse Fourier transform algorithms are used for the generated signal (sequence of sinusoids with specified frequencies).")
+    print(f"\t7 -> Example 7: The fast direct and fast inverse Fourier transform algorithms are used for the concatenated signal.")
     print(f"\t0 -> All examples.")
     print(f"\t-1 -> Help.")
     print(f"\t-10 -> Exit.")
@@ -184,7 +256,7 @@ def choose_example():
         try:
             while True:
                 answer = int(input("Your choice?\t"))
-                if answer >= -1 and answer <= 5 or answer == -10:
+                if answer >= -1 and answer <= 7 or answer == -10:
                     print(f"********************************************************************************\n\n\n")
                     break
                 else:
@@ -222,6 +294,12 @@ def main():
 
         if answer == 5 or answer == 0:
             example5()
+
+        if answer == 6 or answer == 0:
+            example6()
+
+        if answer == 7 or answer == 0:
+            example7()
 
         if answer == -1:
             help()

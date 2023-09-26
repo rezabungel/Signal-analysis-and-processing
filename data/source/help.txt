@@ -74,7 +74,7 @@ Variables:
 --------------------------------------------------------------------------------
 Example 5: The fast direct and fast inverse Fourier transform algorithms are used for the generated signal (sum of sinusoids with specified frequencies).
     note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.
-	    The matching will be done by adjusting the duration of the recording. The function "signal_generator" will suggest doing this if necessary.
+	    The matching will be done by adjusting the duration of the recording. The function "signal_generator_sum" will suggest doing this if necessary.
     note: The signal will be generated from the sum of sinusoids with specified frequencies, its graph will be plotted,
 	    the fast direct discrete Fourier transform will be applied with a graph of the result,
 	    then the inverse fast discrete Fourier transform will be applied,
@@ -87,6 +87,46 @@ Variables:
     SECONDS = 3 (note: In this example, FFT and IFFT algorithms are used. Please agree to change the recording duration if needed.)
     RATE = 44100
     frequencies = [200, 350, 400, 550, 700, 850, 1000]
+    need_to_plot = True
+    mirror_image = True
+--------------------------------------------------------------------------------
+Example 6: The fast direct and fast inverse Fourier transform algorithms are used for the generated signal (sequence of sinusoids with specified frequencies).
+    note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.
+	    The matching will be done by adjusting the duration of the recording. The function "signal_generator_sequence" will suggest doing this if necessary.
+    note: The signal will be generated from the sequence of sinusoids with specified frequencies, its graph will be plotted,
+	    the fast direct discrete Fourier transform will be applied with a graph of the result,
+	    then the inverse fast discrete Fourier transform will be applied,
+	    the signal will be reconstructed from the obtained data,
+	    its graph will be plotted, and finally, it will be reproduced through the speakers.
+    note: The graphs of the "input" and "output" signals will coincide.
+Variables:
+    filename_input = "../data/input_generated_signal6.wav"
+    filename_output = "../data/output_generated_signal6.wav"
+    SECONDS = 3 (note: In this example, FFT and IFFT algorithms are used. Please agree to change the recording duration if needed.)
+    RATE = 44100
+    frequencies = [200, 350, 400, 550, 700, 850, 1000]
+    need_to_plot = True
+    mirror_image = True
+--------------------------------------------------------------------------------
+Example 7: The fast direct and fast inverse Fourier transform algorithms are used for the concatenated signal.
+    note: It may be necessary to match the parameters of the recording to use the FFT and IFFT algorithms.
+	    For this example, the recording parameters are already aligned.
+    note: The signal will be obtained as a result of concatenating two signals: the first one will be generated as the sum of sinusoids,
+        and the second one will be generated as a sequence of sinusoids with the same set of frequencies.
+        A graph of this concatenated signal will be plotted,
+        the fast direct discrete Fourier transform will be applied with a graph of the result.
+        then the inverse fast discrete Fourier transform will be applied,
+        the concatenated signal will be reconstructed from the obtained data,
+        a graph of it will be plotted, and finally, it will be reproduced through the speakers.
+    note: The graphs of the "input" and "output" signals will coincide.
+Variables:
+    filename_input1 = "../data/input_generated_signal_sum7.wav"
+    filename_input2 = "../data/input_generated_signal_sequence7.wav"
+    filename_signal_concatenate = "../data/concatenated_generated_signal7.wav"
+    filename_output = "../data/output_concatenated_generated_signal7.wav"
+    SECONDS = 2.98 (note: For each signal. note: The data volume of the concatenated signal matches a power of two for the application of FFT and IFFT algorithms.)
+    rate_high = 44100
+    frequencies = [200, 400, 0, 500, 800, 400, 0, 200, 800, 400]
     need_to_plot = True
     mirror_image = True
 --------------------------------------------------------------------------------
