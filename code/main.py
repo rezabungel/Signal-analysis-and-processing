@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import signal_recording
 import signal_playback
 import signal_generator
-import creating_a_signal
 import building_a_wave
 import fourier_transform # Does not require data of degree two
 import fourier_transform_in_parallel # Does not require data of degree two
@@ -13,6 +12,7 @@ import fast_fourier_transform # Requires data of degree two
 import inverse_fourier_transform # Does not require data of degree two
 import inverse_fourier_transform_in_parallel # Does not require data of degree two
 import inverse_fast_fourier_transform # Requires data of degree two
+import wave_worker
 
 def example1():
 
@@ -37,7 +37,9 @@ def example1():
 
     iFT, data_signal = inverse_fourier_transform.inverse_fourier_transform(FT=FT, mirror_image=True)
 
-    creating_a_signal.creating_a_signal(data_signal=data_signal, FILENAME=filename_output, RATE=rate_low, CHANNELS=1)
+    print(f"Signal creation has started.")
+    wave_worker.wave_write(FILENAME=filename_output, FRAMES=data_signal, RATE=rate_low, CHANNELS=1)
+    print(f'Finished signal creation. The signal is saved in the "{filename_output}" file!\n')
     building_a_wave.building_a_wave(path_to_signal=filename_output)
     signal_playback.signal_playback(FILENAME=filename_output)
 
@@ -64,7 +66,9 @@ def example2():
 
     iFT, data_signal = inverse_fourier_transform_in_parallel.inverse_fourier_transform_in_parallel(FT=FT, mirror_image=True)
 
-    creating_a_signal.creating_a_signal(data_signal=data_signal, FILENAME=filename_output, RATE=rate_mid, CHANNELS=1)
+    print(f"Signal creation has started.")
+    wave_worker.wave_write(FILENAME=filename_output, FRAMES=data_signal, RATE=rate_mid, CHANNELS=1)
+    print(f'Finished signal creation. The signal is saved in the "{filename_output}" file!\n')
     building_a_wave.building_a_wave(path_to_signal=filename_output)
     signal_playback.signal_playback(FILENAME=filename_output)
 
@@ -93,7 +97,9 @@ def example3():
 
     iFT, data_signal = inverse_fast_fourier_transform.inverse_fast_fourier_transform(FT=FT, mirror_image=True)
 
-    creating_a_signal.creating_a_signal(data_signal=data_signal, FILENAME=filename_output, RATE=rate_high, CHANNELS=1)
+    print(f"Signal creation has started.")    
+    wave_worker.wave_write(FILENAME=filename_output, FRAMES=data_signal, RATE=rate_high, CHANNELS=1)
+    print(f'Finished signal creation. The signal is saved in the "{filename_output}" file!\n')
     building_a_wave.building_a_wave(path_to_signal=filename_output)
     signal_playback.signal_playback(FILENAME=filename_output)
 
@@ -123,7 +129,9 @@ def example4():
 
     iFT, data_signal = inverse_fast_fourier_transform.inverse_fast_fourier_transform(FT=FT, mirror_image=True)
 
-    creating_a_signal.creating_a_signal(data_signal=data_signal, FILENAME=filename_output, RATE=rate, CHANNELS=1)
+    print(f"Signal creation has started.")
+    wave_worker.wave_write(FILENAME=filename_output, FRAMES=data_signal, RATE=rate, CHANNELS=1)
+    print(f'Finished signal creation. The signal is saved in the "{filename_output}" file!\n')
     building_a_wave.building_a_wave(path_to_signal=filename_output)
     print(f"The reconstructed signal with a frequency of 440 Hz and a duration of 11 seconds 89 milliseconds will be played.")
     signal_playback.signal_playback(FILENAME=filename_output) 
@@ -154,7 +162,9 @@ def example5():
 
     iFT, data_signal = inverse_fast_fourier_transform.inverse_fast_fourier_transform(FT=FT, mirror_image=True)
 
-    creating_a_signal.creating_a_signal(data_signal=data_signal, FILENAME=filename_output, RATE=rate_high, CHANNELS=1)
+    print(f"Signal creation has started.")
+    wave_worker.wave_write(FILENAME=filename_output, FRAMES=data_signal, RATE=rate_high, CHANNELS=1)
+    print(f'Finished signal creation. The signal is saved in the "{filename_output}" file!\n')
     building_a_wave.building_a_wave(path_to_signal=filename_output)
     signal_playback.signal_playback(FILENAME=filename_output)
 
