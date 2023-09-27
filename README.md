@@ -29,7 +29,38 @@
 <!-- About The Project -->
 ## <a name="about-the-project"> About The Project </a>
 
-In progress...
+This project provides a set of tools for working with audio signals.<br>
+
+**Recording and Signal Generation**<br>
+The project begins with obtaining an audio signal, which must be in the ".wav" format and monaural. You can use your own files or use the "signal_recording.py" module for recording signals via a microphone and the "signal_generator.py" module for signal generation using sinusoids.
+
+**Concatenation of Files**<br>
+If you need to concatenate multiple ".wav" files, you can use the "wave_concatenate" function from the "wave_worker.py" module.
+
+**Signal Visualization**<br>
+To visualize a signal on a graph, use the function from the "building_a_wave.py" module.
+
+**Discrete Fourier Transform**<br>
+For signal analysis, the discrete Fourier transform is used. The project provides three implementations of the discrete Fourier transform:
+* "fourier_transform.py" - this is a direct calculation implementation using the formula;
+* "fourier_transform_in_parallel.py" - here, the same direct formula is used, but calculations are parallelized on 8 cores, providing faster results;
+* "fast_fourier_transform.py" - this is a fast calculation algorithm, which gives the fastest results but requires the data size to be a power of two.
+
+All these modules have additional functionality that allows you to obtain not only the Fourier transform result but also the amplitude and frequency values, which can be passed to the "building_a_fourier_transform_graph" function in the "building_a_fourier_transform_graph.py" module for visualization. To pass data to the graph-building function, set the "need_to_plot" parameter to True in the Fourier transform function.
+
+**Inverse Discrete Fourier Transform**<br>
+Three implementations are also available for the inverse discrete Fourier transform:
+* Direct formula in "inverse_fourier_transform.py";
+* Parallelized version of the direct formula on 8 cores in "inverse_fourier_transform_in_parallel.py";
+* Fast implementation in "inverse_fast_fourier_transform.py" (requires data size to be a power of two).
+
+To reduce the number of calculations, in the direct direct discrete Fourier transform, calculations were performed only up to the Nyquist frequency. In the inverse discrete Fourier transform, the entire range is required, so you will need to apply the "mirror_image" function. To use the "mirror_image" function, set the "mirror_image" parameter to True in the inverse discrete Fourier transform function. If the data was obtained from elsewhere and already represents the full frequency range, then you don't need to apply the "mirror_image" function.
+
+**Saving the Result**<br>
+The result of the inverse discrete Fourier transform will be the result of the inverse discrete transform and the signal data. You can pass the signal data to the "wave_write" function in the "wave_worker.py" module to save this data to a ".wav" file.
+
+**Signal Playback**<br>
+To play the signal, use the function in the "signal_playback.py" module.
 
 ### <a name="built-with"> Built With </a>
 
