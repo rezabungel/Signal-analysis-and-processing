@@ -29,42 +29,47 @@
 <!-- About The Project -->
 ## <a name="about-the-project"> About The Project </a>
 
-This project provides a set of tools for working with audio signals.<br>
+<details>
+  <summary>This project provides a set of tools for working with audio signals. Click to see more information.</summary><br>
 
-**Recording and Signal Generation**<br>
-The project begins with obtaining an audio signal, which must be in the ".wav" format and monaural. You can use your own files or use the "signal_recording.py" module for recording signals via a microphone and the "signal_generator.py" module for signal generation using sinusoids.
+  **Recording and Signal Generation**<br>
+  To get started, you will need an audio signal, which must be in the `.wav` format and monaural. You can use your own files or use the <a href="./code/signal_recording.py">`signal_recording.py`</a> module for recording signals via a microphone and the <a href="./code/signal_generator.py">`signal_generator.py`</a> module for signal generation using sinusoids.
 
-**Concatenation of Files**<br>
-If you need to concatenate multiple ".wav" files, you can use the "wave_concatenate" function from the "wave_worker.py" module.
+  **Concatenation of Files**<br>
+  If you need to concatenate multiple `.wav` files, you can use the `wave_concatenate` function from the <a href="./code/wave_worker.py">`wave_worker.py`</a> module.
 
-**Signal Visualization**<br>
-To visualize a signal on a graph, use the function from the "building_a_wave.py" module.
+  **Signal Visualization**<br>
+  To visualize a signal on a graph, use the function from the <a href="./code/building_a_wave.py">`building_a_wave.py`</a> module.
 
-**Discrete Fourier Transform**<br>
-For signal analysis, the discrete Fourier transform is used. The project provides three implementations of the discrete Fourier transform:
-* "fourier_transform.py" - this is a direct calculation implementation using the formula;
-* "fourier_transform_in_parallel.py" - here, the same direct formula is used, but calculations are parallelized on 8 cores, providing faster results;
-* "fast_fourier_transform.py" - this is a fast calculation algorithm, which gives the fastest results but requires the data size to be a power of two.
+  **Discrete Fourier Transform**<br>
+  For signal analysis, the discrete Fourier transform is used. The project provides three implementations of the discrete Fourier transform:
+  * <a href="./code/fourier_transform.py">`fourier_transform.py`</a> - this implementation is based on the forward formula;
+  * <a href="./code/fourier_transform_in_parallel.py">`fourier_transform_in_parallel.py`</a> - this implementation uses the same forward formula, but calculations are performed in parallel on 8 cores;
+  * <a href="./code/fast_fourier_transform.py">`fast_fourier_transform.py`</a> - this implementation employs the fast discrete Fourier transform algorithm, but here it requires the data size to be a power of two.
 
-All these modules have additional functionality that allows you to obtain not only the Fourier transform result but also the amplitude and frequency values, which can be passed to the "building_a_fourier_transform_graph" function in the "building_a_fourier_transform_graph.py" module for visualization. To pass data to the graph-building function, set the "need_to_plot" parameter to True in the Fourier transform function.
+  The performance of these modules is distributed as follows: <a href="./code/fourier_transform.py">`fourier_transform.py`</a> < <a href="./code/fourier_transform_in_parallel.py">`fourier_transform_in_parallel.py`</a> < <a href="./code/fast_fourier_transform.py">`fast_fourier_transform.py`</a>. All of these modules have additional functionality that allows you to obtain not only the Fourier transform result but also amplitude and frequency values. These amplitude and frequency values can be passed to the function `building_a_fourier_transform_graph` in the <a href="./code/building_a_fourier_transform_graph.py">`building_a_fourier_transform_graph.py`</a> module for visualization on a graph. To pass data to the graph-building function, set the `need_to_plot` parameter to `True` in the Fourier transform function.
 
-**Inverse Discrete Fourier Transform**<br>
-Three implementations are also available for the inverse discrete Fourier transform:
-* Direct formula in "inverse_fourier_transform.py";
-* Parallelized version of the direct formula on 8 cores in "inverse_fourier_transform_in_parallel.py";
-* Fast implementation in "inverse_fast_fourier_transform.py" (requires data size to be a power of two).
+  **Inverse Discrete Fourier Transform**<br>
+  Three implementations are also available for the inverse discrete Fourier transform:
+  * <a href="./code/inverse_fourier_transform.py">`inverse_fourier_transform.py`</a> - this implementation is based on the forward formula;
+  * <a href="./code/inverse_fourier_transform_in_parallel.py">`inverse_fourier_transform_in_parallel.py`</a> - this implementation uses the same forward formula, but calculations are performed in parallel on 8 cores;
+  * <a href="./code/inverse_fast_fourier_transform.py">`inverse_fast_fourier_transform.py`</a> - this implementation employs the fast inverse discrete Fourier transform algorithm, but here it requires the data size to be a power of two.
 
-To reduce the number of calculations, in the direct direct discrete Fourier transform, calculations were performed only up to the Nyquist frequency. In the inverse discrete Fourier transform, the entire range is required, so you will need to apply the "mirror_image" function. To use the "mirror_image" function, set the "mirror_image" parameter to True in the inverse discrete Fourier transform function. If the data was obtained from elsewhere and already represents the full frequency range, then you don't need to apply the "mirror_image" function.
+  The performance of these modules is distributed as follows: <a href="./code/inverse_fourier_transform.py">`inverse_fourier_transform.py`</a> < <a href="./code/inverse_fourier_transform_in_parallel.py">`inverse_fourier_transform_in_parallel.py`</a> < <a href="./code/inverse_fast_fourier_transform.py">`inverse_fast_fourier_transform.py`</a>. To reduce the number of calculations, in the direct discrete Fourier transform, calculations were performed only up to the Nyquist frequency. In the inverse discrete Fourier transform, the entire frequency range is required, so you will need to apply the `mirror_image` function to obtain the complete frequency range. To use the `mirror_image` function, set the `mirror_image` parameter to `True` in the inverse discrete Fourier transform function. If the data was obtained from elsewhere and already represents the full frequency range, then you don't need to apply the `mirror_image` function.
 
-**Saving the Result**<br>
-The result of the inverse discrete Fourier transform will be the result of the inverse discrete transform and the signal data. You can pass the signal data to the "wave_write" function in the "wave_worker.py" module to save this data to a ".wav" file.
+  **Saving the Result**<br>
+  The result of the inverse discrete Fourier transform will be the result of the inverse discrete transform and the signal data. You can pass the signal data to the `wave_write` function in the <a href="./code/wave_worker.py">`wave_worker.py`</a> module to save this data to a `.wav` file.
 
-**Signal Playback**<br>
-To play the signal, use the function in the "signal_playback.py" module.
+  **Signal Playback**<br>
+  To play the signal, use the function in the <a href="./code/signal_playback.py">`signal_playback.py`</a> module.
+</details>
 
 ### <a name="built-with"> Built With </a>
 
-In progress...
+[![Badge Python][Badge_Python]][Python_home]
+[![Badge PyAudio][Badge_PyAudio]][PyAudio_home]
+[![Badge NumPy][Badge_NumPy]][NumPy_home]
+[![Badge Matplotlib][Badge_Matplotlib]][Matplotlib_home]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -72,8 +77,6 @@ In progress...
 
 <!-- Getting Started -->
 ## <a name="getting-started"> Getting Started </a>
-
-In progress...
 
 ### <a name="installation"> Installation </a>
 
@@ -119,10 +122,12 @@ But it would be best to use a virtual environment as demonstrated in the [Instal
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+
 <!-- Usage -->
 ## <a name="usage"> Usage </a>
 
-In progress...
+Several examples with descriptions of what happens are provided in <a href="./code/main.py">main.py</a>. Furthermore descriptions of these examples can be found in <a href="./data/source/help.txt">help.txt</a> or by viewing the help when running <a href="./code/main.py">main.py</a> and passing `-1` as a parameter during program execution. All modules and functions have documentation, so you can refer to them for additional information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -138,6 +143,11 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 
 
 <!-- Markdown links -->
+[Python_home]: https://www.python.org
+[PyAudio_home]: https://pypi.org/project/PyAudio/
+[NumPy_home]: https://numpy.org
+[Matplotlib_home]: https://matplotlib.org
+
 [documentation-pyaudio]: https://people.csail.mit.edu/hubert/pyaudio/docs/
 [documentation-numpy]: https://numpy.org/doc/
 [documentation-matplotlib]: https://matplotlib.org/stable/users/index.html
@@ -146,3 +156,8 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [documentation-cmath]: https://docs.python.org/3.10/library/cmath.html
 [documentation-math]: https://docs.python.org/3.10/library/math.html
 [documentation-time]: https://docs.python.org/3.10/library/time.html
+
+[Badge_Python]: https://img.shields.io/badge/3.10-ffffff?logo=python&logoColor=FFFFFF&label=Python&labelColor=000000
+[Badge_PyAudio]: https://img.shields.io/badge/PyAudio-000000
+[Badge_NumPy]: https://img.shields.io/badge/NumPy-000000?logo=numpy
+[Badge_Matplotlib]: https://img.shields.io/badge/Matplotlib-000000
